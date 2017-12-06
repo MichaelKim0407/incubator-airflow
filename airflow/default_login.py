@@ -55,8 +55,7 @@ class DefaultUser(object):
         return True
 
     def is_superuser(self):
-        '''Access all the things'''
-        return True
+        return self.user.superuser
 
 
 # models.User = User  # hack!

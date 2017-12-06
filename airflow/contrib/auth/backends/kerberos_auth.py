@@ -82,8 +82,7 @@ class KerberosUser(models.User):
         return True
 
     def is_superuser(self):
-        '''Access all the things'''
-        return True
+        return self.user.superuser
 
 
 @login_manager.user_loader
