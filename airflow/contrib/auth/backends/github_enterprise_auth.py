@@ -63,8 +63,7 @@ class GHEUser(models.User):
         return True
 
     def is_superuser(self):
-        '''Access all the things'''
-        return True
+        return self.user.superuser
 
 
 class AuthenticationError(Exception):

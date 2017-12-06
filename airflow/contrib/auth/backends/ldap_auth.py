@@ -228,7 +228,6 @@ class LdapUser(models.User):
         return self.data_profiler
 
     def is_superuser(self):
-        '''Access all the things'''
         return self.superuser
 
 
