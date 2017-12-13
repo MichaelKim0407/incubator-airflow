@@ -181,6 +181,9 @@ encrypt_s3_logs = False
 # DEPRECATED option for remote log storage, use remote_base_folder instead!
 s3_folder =
 
+# Default logging level for airflow commands
+default_level = 20
+
 [cli]
 # In what way should the cli access the API. The LocalClient will use the
 # database directly, while the json_client will use the api running on the
@@ -460,6 +463,7 @@ non_pooled_task_slot_count = 128
 
 [logging]
 base_folder = {AIRFLOW_HOME}/logs
+default_level = 20
 
 [cli]
 api_client = airflow.api.client.local_client
