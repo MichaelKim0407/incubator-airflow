@@ -41,9 +41,10 @@ import time
 import psutil
 
 import airflow
-from airflow import api
+from airflow import api, models
 from airflow import jobs, settings
 from airflow import configuration as conf
+from airflow.contrib.auth.backends.password_auth import PasswordUser
 from airflow.exceptions import AirflowException
 from airflow.executors import DEFAULT_EXECUTOR
 from airflow.models import (DagModel, DagBag, TaskInstance,
@@ -1146,6 +1147,20 @@ def kerberos(args):  # noqa
         airflow.security.kerberos.run()
 
 
+def createsuperuser(args):
+    if not args.password:
+        raise ValueError("password must not be empty")
+    user = PasswordUser(models.User())
+    user.username = args.username or 'airflow-admin'
+    user.email = args.email or ''
+    user.password = args.password
+    user.superuser = True
+    session = settings.Session()
+    session.add(user)
+    session.commit()
+    session.close()
+
+
 Arg = namedtuple(
     'Arg', ['flags', 'help', 'action', 'default', 'nargs', 'type', 'choices', 'metavar'])
 Arg.__new__.__defaults__ = (None, None, None, None, None, None, None)
@@ -1464,6 +1479,18 @@ class CLIFactory(object):
             ('--conn_extra',),
             help='Connection `Extra` field, optional when adding a connection',
             type=str),
+        'username': Arg(
+            ('--username',),
+            help='Superuser username, default: "airflow-admin"',
+            type=str),
+        'password': Arg(
+            ('--password',),
+            help='Superuser password',
+            type=str),
+        'email': Arg(
+            ('--email',),
+            help='Superuser email, default: ""',
+            type=str),
     }
     subparsers = (
         {
@@ -1597,6 +1624,10 @@ class CLIFactory(object):
             'help': "List/Add/Delete connections",
             'args': ('list_connections', 'add_connection', 'delete_connection',
                      'conn_id', 'conn_uri', 'conn_extra'),
+        }, {
+            'func': createsuperuser,
+            'help': "Create super user",
+            'args': ('username', 'password', 'email'),
         },
     )
     subparsers_dict = {sp['func'].__name__: sp for sp in subparsers}
