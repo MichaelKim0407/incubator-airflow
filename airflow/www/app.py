@@ -32,6 +32,8 @@ from airflow import jobs
 from airflow import settings
 from airflow import configuration
 
+from airflow.contrib.auth.backends.password_auth import PasswordUser
+
 
 def create_app(config=None, testing=False):
     app = Flask(__name__)
@@ -89,8 +91,8 @@ def create_app(config=None, testing=False):
             models.Pool, Session, name="Pools", category="Admin"))
         av(vs.ConfigurationView(
             name='Configuration', category="Admin"))
-        av(vs.UserModelView(
-            models.User, Session, name="Users", category="Admin"))
+        av(vs.PasswordUserModelView(
+            PasswordUser, Session, name="Users", category="Admin", endpoint='user'))
         av(vs.ConnectionModelView(
             models.Connection, Session, name="Connections", category="Admin"))
         av(vs.VariableView(
