@@ -709,7 +709,7 @@ class Airflow(BaseView):
     @wwwutils.action_logging
     def log(self):
         BASE_LOG_FOLDER = os.path.expanduser(
-            conf.get('core', 'BASE_LOG_FOLDER'))
+            conf.get('logging', 'BASE_FOLDER'))
         dag_id = request.args.get('dag_id')
         task_id = request.args.get('task_id')
         execution_date = request.args.get('execution_date')
@@ -766,7 +766,7 @@ class Airflow(BaseView):
 
             if not log_loaded:
                 # load remote logs
-                remote_log_base = conf.get('core', 'REMOTE_BASE_LOG_FOLDER')
+                remote_log_base = conf.get('logging', 'REMOTE_BASE_FOLDER')
                 remote_log = os.path.join(remote_log_base, log_relative)
                 log += '\n*** Reading remote logs...\n'
 
