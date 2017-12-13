@@ -34,7 +34,7 @@ from sqlalchemy import or_, desc, and_, union_all
 from flask import (
     redirect, url_for, request, Markup, Response, current_app, render_template, make_response)
 from flask_admin import BaseView, expose, AdminIndexView
-from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.sqla.view import ModelView, gettext, log
 from flask_admin.actions import action
 from flask_admin.babel import lazy_gettext
 from flask_admin.tools import iterdecode
@@ -2552,6 +2552,50 @@ class UserModelView(wwwutils.SuperUserMixin, AirflowModelView):
     verbose_name = "User"
     verbose_name_plural = "Users"
     column_default_sort = 'username'
+
+
+class PasswordUserModelView(UserModelView):
+    column_list = (
+        'username',
+        'email',
+        'superuser',
+    )
+    column_searchable_list = (
+        'username',
+        'email',
+    )
+
+    form_columns = (
+        'username',
+        'password',
+        'email',
+        'superuser',
+    )
+    form_widget_args = {
+        'password': {
+            'type': "password",
+        },
+    }
+
+    def create_model(self, form):
+        try:
+            user = models.User()
+            model = self.model(user)
+            form.populate_obj(model)
+            self.session.add(model)
+            self._on_model_change(form, model, True)
+            self.session.commit()
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                flash(gettext('Failed to create record. %(error)s', error=str(ex)), 'error')
+                log.exception('Failed to create record.')
+
+            self.session.rollback()
+
+            return False
+        else:
+            self.after_model_change(form, model, True)
+        return model
 
 
 class VersionView(wwwutils.SuperUserMixin, LoggingMixin, BaseView):
