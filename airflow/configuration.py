@@ -98,21 +98,6 @@ airflow_home = {AIRFLOW_HOME}
 # This path must be absolute
 dags_folder = {AIRFLOW_HOME}/dags
 
-# The folder where airflow should store its log files
-# This path must be absolute
-base_log_folder = {AIRFLOW_HOME}/logs
-
-# Airflow can store logs remotely in AWS S3 or Google Cloud Storage. Users
-# must supply a remote location URL (starting with either 's3://...' or
-# 'gs://...') and an Airflow connection id that provides access to the storage
-# location.
-remote_base_log_folder =
-remote_log_conn_id =
-# Use server-side encryption for logs stored in S3
-encrypt_s3_logs = False
-# DEPRECATED option for remote log storage, use remote_base_log_folder instead!
-s3_log_folder =
-
 # The executor class that airflow should use. Choices include
 # SequentialExecutor, LocalExecutor, CeleryExecutor
 executor = SequentialExecutor
@@ -179,6 +164,22 @@ security =
 # Turn unit test mode on (overwrites many configuration options with test
 # values at runtime)
 unit_test_mode = False
+
+[logging]
+# The folder where airflow should store its log files
+# This path must be absolute
+base_folder = {AIRFLOW_HOME}/logs
+
+# Airflow can store logs remotely in AWS S3 or Google Cloud Storage. Users
+# must supply a remote location URL (starting with either 's3://...' or
+# 'gs://...') and an Airflow connection id that provides access to the storage
+# location.
+remote_base_folder =
+remote_conn_id =
+# Use server-side encryption for logs stored in S3
+encrypt_s3_logs = False
+# DEPRECATED option for remote log storage, use remote_base_folder instead!
+s3_folder =
 
 [cli]
 # In what way should the cli access the API. The LocalClient will use the
@@ -448,7 +449,6 @@ unit_test_mode = True
 airflow_home = {AIRFLOW_HOME}
 dags_folder = {TEST_DAGS_FOLDER}
 plugins_folder = {TEST_PLUGINS_FOLDER}
-base_log_folder = {AIRFLOW_HOME}/logs
 executor = SequentialExecutor
 sql_alchemy_conn = sqlite:///{AIRFLOW_HOME}/unittests.db
 load_examples = True
@@ -457,6 +457,9 @@ dag_concurrency = 16
 dags_are_paused_at_creation = False
 fernet_key = {FERNET_KEY}
 non_pooled_task_slot_count = 128
+
+[logging]
+base_folder = {AIRFLOW_HOME}/logs
 
 [cli]
 api_client = airflow.api.client.local_client
