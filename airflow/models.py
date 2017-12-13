@@ -916,7 +916,7 @@ class TaskInstance(Base):
     @property
     def log_filepath(self):
         iso = self.execution_date.isoformat()
-        log = os.path.expanduser(configuration.get('core', 'BASE_LOG_FOLDER'))
+        log = os.path.expanduser(configuration.get('logging', 'BASE_FOLDER'))
         return (
             "{log}/{self.dag_id}/{self.task_id}/{iso}.log".format(**locals()))
 

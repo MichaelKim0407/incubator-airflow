@@ -359,7 +359,7 @@ def run(args, dag=None):
         # writable by both users, then it's possible that re-running a task
         # via the UI (or vice versa) results in a permission error as the task
         # tries to write to a log file created by the other user.
-        log_base = os.path.expanduser(conf.get('core', 'BASE_LOG_FOLDER'))
+        log_base = os.path.expanduser(conf.get('logging', 'BASE_FOLDER'))
         directory = log_base + "/{args.dag_id}/{args.task_id}".format(args=args)
         # Create the log file and give it group writable permissions
         # TODO(aoen): Make log dirs and logs globally readable for now since the SubDag
@@ -464,16 +464,16 @@ def run(args, dag=None):
     logging.root.handlers = []
 
     # store logs remotely
-    remote_base = conf.get('core', 'REMOTE_BASE_LOG_FOLDER')
+    remote_base = conf.get('logging', 'REMOTE_BASE_FOLDER')
 
     # deprecated as of March 2016
-    if not remote_base and conf.get('core', 'S3_LOG_FOLDER'):
+    if not remote_base and conf.get('logging', 'S3_FOLDER'):
         warnings.warn(
-            'The S3_LOG_FOLDER conf key has been replaced by '
-            'REMOTE_BASE_LOG_FOLDER. Your conf still works but please '
+            'The S3_FOLDER conf key has been replaced by '
+            'REMOTE_BASE_FOLDER. Your conf still works but please '
             'update airflow.cfg to ensure future compatibility.',
             DeprecationWarning)
-        remote_base = conf.get('core', 'S3_LOG_FOLDER')
+        remote_base = conf.get('logging', 'S3_FOLDER')
 
     if os.path.exists(filename):
         # read log and remove old logs to get just the latest additions
@@ -887,7 +887,7 @@ def serve_logs(args):
 
     @flask_app.route('/log/<path:filename>')
     def serve_logs(filename):  # noqa
-        log = os.path.expanduser(conf.get('core', 'BASE_LOG_FOLDER'))
+        log = os.path.expanduser(conf.get('logging', 'BASE_FOLDER'))
         return flask.send_from_directory(
             log,
             filename,
