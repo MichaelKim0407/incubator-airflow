@@ -17,7 +17,6 @@ from mock import patch
 
 from airflow.contrib.sensors.datadog_sensor import DatadogSensor
 
-
 at_least_one_event = [{'alert_type': 'info',
                        'comments': [],
                        'date_happened': 1419436860,
@@ -86,6 +85,7 @@ class TestDatadogSensor(unittest.TestCase):
             response_check=None)
 
         self.assertFalse(sensor.poke({}))
+
 
 if __name__ == '__main__':
     unittest.main()

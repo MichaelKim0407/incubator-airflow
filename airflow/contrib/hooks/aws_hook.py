@@ -24,6 +24,7 @@ class AwsHook(BaseHook):
     Interact with AWS.
     This class is a thin wrapper around the boto3 python library.
     """
+
     def __init__(self, aws_conn_id='aws_default'):
         self.aws_conn_id = aws_conn_id
 

@@ -35,7 +35,7 @@ class DataprocClusterCreateOperator(BaseOperator):
     parameters detailed in the link are available as a parameter to this operator.
     """
 
-    template_fields = ['cluster_name',]
+    template_fields = ['cluster_name', ]
 
     @apply_defaults
     def __init__(self,
@@ -184,8 +184,8 @@ class DataprocClusterCreateOperator(BaseOperator):
 
         if self._get_cluster(service):
             logging.info('Cluster {} already exists... Checking status...'.format(
-                            self.cluster_name
-                        ))
+                self.cluster_name
+            ))
             self._wait_for_done(service)
             return True
 
@@ -260,8 +260,8 @@ class DataprocClusterCreateOperator(BaseOperator):
             time.sleep(10)
             if self._get_cluster(service):
                 logging.info('Cluster {} already exists... Checking status...'.format(
-                             self.cluster_name
-                             ))
+                    self.cluster_name
+                ))
                 self._wait_for_done(service)
                 return True
             else:

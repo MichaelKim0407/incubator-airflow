@@ -30,7 +30,7 @@ class TestSparkSubmitOperator(unittest.TestCase):
         'files': 'hive-site.xml',
         'py_files': 'sample_library.py',
         'jars': 'parquet.jar',
-        'total_executor_cores':4,
+        'total_executor_cores': 4,
         'executor_cores': 4,
         'executor_memory': '22g',
         'keytab': 'privileged_user.keytab',
@@ -80,8 +80,6 @@ class TestSparkSubmitOperator(unittest.TestCase):
         self.assertEqual(self._config['java_class'], operator._java_class)
         self.assertEqual(self._config['driver_memory'], operator._driver_memory)
         self.assertEqual(self._config['application_args'], operator._application_args)
-
-
 
 
 if __name__ == '__main__':

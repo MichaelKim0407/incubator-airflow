@@ -88,7 +88,7 @@ class RedshiftToS3Transfer(BaseOperator):
         columns = map(lambda row: row[0], rows)
         column_names = (', ').join(map(lambda c: "\\'{0}\\'".format(c), columns))
         column_castings = (', ').join(map(lambda c: "CAST({0} AS text) AS {0}".format(c),
-                                            columns))
+                                          columns))
 
         unload_query = """
                         UNLOAD ('SELECT {0}
@@ -100,7 +100,7 @@ class RedshiftToS3Transfer(BaseOperator):
                         credentials 'aws_access_key_id={6};aws_secret_access_key={7}'
                         {8};
                         """.format(column_names, column_castings, self.schema, self.table,
-                                self.s3_bucket, self.s3_key, a_key, s_key, unload_options)
+                                   self.s3_bucket, self.s3_key, a_key, s_key, unload_options)
 
         logging.info('Executing UNLOAD command...')
         self.hook.run(unload_query, self.autocommit)

@@ -136,6 +136,7 @@ class BigQueryPandasConnector(GbqConnector):
     without forcing a three legged OAuth connection. Instead, we can inject
     service account credentials into the binding.
     """
+
     def __init__(self, project_id, service, reauth=False, verbose=False):
         gbq_check_google_client_version()
         gbq_test_google_api_imports()
@@ -185,10 +186,10 @@ class BigQueryBaseCursor(object):
         self.project_id = project_id
 
     def run_query(
-            self, bql, destination_dataset_table = False,
-            write_disposition = 'WRITE_EMPTY',
+            self, bql, destination_dataset_table=False,
+            write_disposition='WRITE_EMPTY',
             allow_large_results=False,
-            udf_config = False,
+            udf_config=False,
             use_legacy_sql=True):
         """
         Executes a BigQuery SQL query. Optionally persists results in a BigQuery
@@ -414,8 +415,8 @@ class BigQueryBaseCursor(object):
         allowed_formats = ["CSV", "NEWLINE_DELIMITED_JSON", "AVRO", "GOOGLE_SHEETS"]
         if source_format not in allowed_formats:
             raise ValueError("{0} is not a valid source format. "
-                    "Please use one of the following types: {1}"
-                    .format(source_format, allowed_formats))
+                             "Please use one of the following types: {1}"
+                             .format(source_format, allowed_formats))
 
         # bigquery also allows you to define how you want a table's schema to change
         # as a side effect of a load
@@ -429,7 +430,7 @@ class BigQueryBaseCursor(object):
             raise ValueError(
                 "{0} contains invalid schema update options. "
                 "Please only use one or more of the following options: {1}"
-                .format(schema_update_options, allowed_schema_update_options)
+                    .format(schema_update_options, allowed_schema_update_options)
             )
 
         destination_project, destination_dataset, destination_table = \
@@ -564,10 +565,10 @@ class BigQueryBaseCursor(object):
             optional_params['startIndex'] = start_index
         return (
             self.service.tabledata()
-            .list(
+                .list(
                 projectId=self.project_id, datasetId=dataset_id,
                 tableId=table_id, **optional_params)
-            .execute()
+                .execute()
         )
 
     def run_table_delete(self, deletion_dataset_table, ignore_if_missing=False):
@@ -607,7 +608,6 @@ class BigQueryBaseCursor(object):
             else:
                 logging.info('Table does not exist. Skipping.')
 
-
     def run_table_upsert(self, dataset_id, table_resource, project_id=None):
         """
         creates a new, empty table in the dataset;
@@ -640,10 +640,10 @@ class BigQueryBaseCursor(object):
                                                         body=table_resource).execute()
             # If there is a next page, we need to check the next page.
             if 'nextPageToken' in tables_list_resp:
-                tables_list_resp = self.service.tables()\
+                tables_list_resp = self.service.tables() \
                     .list(projectId=project_id,
                           datasetId=dataset_id,
-                          pageToken=tables_list_resp['nextPageToken'])\
+                          pageToken=tables_list_resp['nextPageToken']) \
                     .execute()
             # If there is no next page, then the table doesn't exist.
             else:
@@ -658,8 +658,8 @@ class BigQueryBaseCursor(object):
                                       source_dataset,
                                       view_dataset,
                                       view_table,
-                                      source_project = None,
-                                      view_project = None):
+                                      source_project=None,
+                                      view_project=None):
         """
         Grant authorized view access of a dataset to a view table.
         If this view has already been granted access to the dataset, do nothing.
@@ -783,11 +783,11 @@ class BigQueryCursor(BigQueryBaseCursor):
 
             query_results = (
                 self.service.jobs()
-                .getQueryResults(
+                    .getQueryResults(
                     projectId=self.project_id,
                     jobId=self.job_id,
                     pageToken=self.page_token)
-                .execute()
+                    .execute()
             )
 
             if 'rows' in query_results and query_results['rows']:
@@ -931,9 +931,9 @@ def _split_tablename(table_input, default_project_id, var_name=None):
         rest = cmpt[1]
     else:
         raise Exception((
-            '{var}Expect format of (<project:)<dataset>.<table>, '
-            'got {input}'
-        ).format(var=var_print(var_name), input=table_input))
+                            '{var}Expect format of (<project:)<dataset>.<table>, '
+                            'got {input}'
+                        ).format(var=var_print(var_name), input=table_input))
 
     cmpt = rest.split('.')
     if len(cmpt) == 3:
@@ -949,9 +949,9 @@ def _split_tablename(table_input, default_project_id, var_name=None):
         table_id = cmpt[1]
     else:
         raise Exception((
-            '{var}Expect format of (<project.|<project:)<dataset>.<table>, '
-            'got {input}'
-        ).format(var=var_print(var_name), input=table_input))
+                            '{var}Expect format of (<project.|<project:)<dataset>.<table>, '
+                            'got {input}'
+                        ).format(var=var_print(var_name), input=table_input))
 
     if project_id is None:
         if var_name is not None:

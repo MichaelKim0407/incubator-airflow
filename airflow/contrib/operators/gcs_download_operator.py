@@ -24,21 +24,21 @@ class GoogleCloudStorageDownloadOperator(BaseOperator):
     """
     Downloads a file from Google Cloud Storage.
     """
-    template_fields = ('bucket','object','filename','store_to_xcom_key',)
+    template_fields = ('bucket', 'object', 'filename', 'store_to_xcom_key',)
     template_ext = ('.sql',)
     ui_color = '#f0eee4'
 
     @apply_defaults
     def __init__(
-        self,
-        bucket,
-        object,
-        filename=False,
-        store_to_xcom_key=False,
-        google_cloud_storage_conn_id='google_cloud_storage_default',
-        delegate_to=None,
-        *args,
-        **kwargs):
+            self,
+            bucket,
+            object,
+            filename=False,
+            store_to_xcom_key=False,
+            google_cloud_storage_conn_id='google_cloud_storage_default',
+            delegate_to=None,
+            *args,
+            **kwargs):
         """
         Create a new GoogleCloudStorageDownloadOperator.
 

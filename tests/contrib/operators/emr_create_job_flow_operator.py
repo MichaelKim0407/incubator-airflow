@@ -26,6 +26,7 @@ RUN_JOB_FLOW_SUCCESS_RETURN = {
     'JobFlowId': 'j-8989898989'
 }
 
+
 class TestEmrCreateJobFlowOperator(unittest.TestCase):
     def setUp(self):
         configuration.load_test_config()
@@ -37,10 +38,8 @@ class TestEmrCreateJobFlowOperator(unittest.TestCase):
         # Mock out the emr_client creator
         self.boto3_client_mock = MagicMock(return_value=mock_emr_client)
 
-
     def test_execute_uses_the_emr_config_to_create_a_cluster_and_returns_job_id(self):
         with patch('boto3.client', self.boto3_client_mock):
-
             operator = EmrCreateJobFlowOperator(
                 task_id='test_task',
                 aws_conn_id='aws_default',
@@ -48,6 +47,7 @@ class TestEmrCreateJobFlowOperator(unittest.TestCase):
             )
 
             self.assertEqual(operator.execute(None), 'j-8989898989')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -20,7 +20,6 @@
 
 import sys
 
-
 # ------------------------------------------------------------------------
 #
 # #TODO #FIXME Airflow 2.0
@@ -48,6 +47,8 @@ _hooks = {
 }
 
 import os as _os
+
 if not _os.environ.get('AIRFLOW_USE_NEW_IMPORTS', False):
     from airflow.utils.helpers import AirflowImporter
+
     airflow_importer = AirflowImporter(sys.modules[__name__], _hooks)

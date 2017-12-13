@@ -94,10 +94,8 @@ class TestEmrStepSensor(unittest.TestCase):
         # Mock out the emr_client creator
         self.boto3_client_mock = MagicMock(return_value=self.mock_emr_client)
 
-
     def test_execute_calls_with_the_job_flow_id_and_step_id_until_it_reaches_a_terminal_state(self):
         with patch('boto3.client', self.boto3_client_mock):
-
             operator = EmrStepSensor(
                 task_id='test_task',
                 poke_interval=1,

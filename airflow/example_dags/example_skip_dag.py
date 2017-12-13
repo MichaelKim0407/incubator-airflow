@@ -17,7 +17,6 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.models import DAG
 from airflow.exceptions import AirflowSkipException
 
-
 args = {
     'owner': 'airflow',
     'start_date': airflow.utils.dates.days_ago(2)
@@ -36,7 +35,6 @@ dag = DAG(dag_id='example_skip_dag', default_args=args)
 
 
 def create_test_pipeline(suffix, trigger_rule, dag):
-
     skip_operator = DummySkipOperator(task_id='skip_operator_{}'.format(suffix), dag=dag)
 
     always_true = DummyOperator(task_id='always_true_{}'.format(suffix), dag=dag)

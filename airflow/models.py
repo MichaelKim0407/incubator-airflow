@@ -89,6 +89,7 @@ Stats = settings.Stats
 ENCRYPTION_ON = False
 try:
     from cryptography.fernet import Fernet
+
     FERNET = Fernet(configuration.get('core', 'FERNET_KEY').encode('utf-8'))
     ENCRYPTION_ON = True
 except:
@@ -158,6 +159,7 @@ class DagBag(BaseDagBag, LoggingMixin):
         by the scheduler job only
     :type sync_to_db: bool
     """
+
     def __init__(
             self,
             dag_folder=None,
@@ -202,8 +204,8 @@ class DagBag(BaseDagBag, LoggingMixin):
         if orm_dag and (
                 root_dag_id not in self.dags or
                 (
-                    orm_dag.last_expired and
-                    dag.last_loaded < orm_dag.last_expired
+                        orm_dag.last_expired and
+                        dag.last_loaded < orm_dag.last_expired
                 )
         ):
             # Reprocess source file
@@ -330,14 +332,14 @@ class DagBag(BaseDagBag, LoggingMixin):
 
         tis = (
             session.query(TI)
-            .join(LJ, TI.job_id == LJ.id)
-            .filter(TI.state == State.RUNNING)
-            .filter(
+                .join(LJ, TI.job_id == LJ.id)
+                .filter(TI.state == State.RUNNING)
+                .filter(
                 or_(
                     LJ.state != State.RUNNING,
                     LJ.latest_heartbeat < limit_dttm,
                 ))
-            .all()
+                .all()
         )
 
         for ti in tis:
@@ -417,7 +419,7 @@ class DagBag(BaseDagBag, LoggingMixin):
 
                             td = datetime.now() - ts
                             td = td.total_seconds() + (
-                                float(td.microseconds) / 1000000)
+                                    float(td.microseconds) / 1000000)
                             stats.append(FileLoadStat(
                                 filepath.replace(dag_folder, ''),
                                 td,
@@ -719,7 +721,6 @@ class TaskInstance(Base):
     any confusion around what task instances are or aren't ready to run
     even while multiple schedulers may be firing task instances.
     """
-
 
     __tablename__ = "task_instance"
 
@@ -1166,7 +1167,8 @@ class TaskInstance(Base):
             min_backoff = int(delay.total_seconds() * (2 ** (self.try_number - 2)))
             # deterministic per task instance
             hash = int(hashlib.sha1("{}#{}#{}#{}".format(self.dag_id, self.task_id,
-                self.execution_date, self.try_number).encode('utf-8')).hexdigest(), 16)
+                                                         self.execution_date, self.try_number).encode(
+                'utf-8')).hexdigest(), 16)
             # between 0.5 * delay * (2^retry_number) and 1.0 * delay * (2^retry_number)
             modded_hash = min_backoff + hash % min_backoff
             # timedelta has a maximum representable value. The exponentiation
@@ -1202,9 +1204,9 @@ class TaskInstance(Base):
 
         pool = (
             session
-            .query(Pool)
-            .filter(Pool.pool == self.task.pool)
-            .first()
+                .query(Pool)
+                .filter(Pool.pool == self.task.pool)
+                .first()
         )
         if not pool:
             return False
@@ -1367,6 +1369,7 @@ class TaskInstance(Base):
                     logging.error("Killing subprocess")
                     task_copy.on_kill()
                     raise AirflowException("Task received SIGTERM signal")
+
                 signal.signal(signal.SIGTERM, signal_handler)
 
                 # Don't clear Xcom until the task is certain to execute
@@ -1509,10 +1512,10 @@ class TaskInstance(Base):
                 params.update(task.dag.params)
             dag_run = (
                 session.query(DagRun)
-                .filter_by(
+                    .filter_by(
                     dag_id=task.dag.dag_id,
                     execution_date=self.execution_date)
-                .first()
+                    .first()
             )
             run_id = dag_run.run_id if dag_run else None
             session.expunge_all()
@@ -1526,6 +1529,7 @@ class TaskInstance(Base):
             Wrapper around Variable. This way you can get variables in templates by using
             {var.variable_name}.
             """
+
             def __init__(self):
                 self.var = None
 
@@ -1783,7 +1787,7 @@ class SkipMixin(object):
                 TaskInstance.dag_id == dag_run.dag_id,
                 TaskInstance.execution_date == dag_run.execution_date,
                 TaskInstance.task_id.in_(task_ids)
-            ).update({TaskInstance.state : State.SKIPPED,
+            ).update({TaskInstance.state: State.SKIPPED,
                       TaskInstance.start_date: now,
                       TaskInstance.end_date: now},
                      synchronize_session=False)
@@ -1999,8 +2003,8 @@ class BaseOperator(object):
             raise AirflowException(
                 "The trigger_rule must be one of {all_triggers},"
                 "'{d}.{t}'; received '{tr}'."
-                .format(all_triggers=TriggerRule.all_triggers,
-                        d=dag.dag_id, t=task_id, tr=trigger_rule))
+                    .format(all_triggers=TriggerRule.all_triggers,
+                            d=dag.dag_id, t=task_id, tr=trigger_rule))
 
         self.trigger_rule = trigger_rule
         self.depends_on_past = depends_on_past
@@ -2068,9 +2072,9 @@ class BaseOperator(object):
 
     def __eq__(self, other):
         return (
-            type(self) == type(other) and
-            all(self.__dict__.get(c, None) == other.__dict__.get(c, None)
-                for c in self._comps))
+                type(self) == type(other) and
+                all(self.__dict__.get(c, None) == other.__dict__.get(c, None)
+                    for c in self._comps))
 
     def __ne__(self, other):
         return not self == other
@@ -2442,7 +2446,7 @@ class BaseOperator(object):
             TaskInstance(self, dt).run(
                 mark_success=mark_success,
                 ignore_depends_on_past=(
-                    dt == start_date and ignore_first_depends_on_past),
+                        dt == start_date and ignore_first_depends_on_past),
                 ignore_ti_state=ignore_ti_state)
 
     def dry_run(self):
@@ -2568,7 +2572,6 @@ class BaseOperator(object):
 
 
 class DagModel(Base):
-
     __tablename__ = "dag"
     """
     These items are stored in the database for state related information
@@ -2769,11 +2772,11 @@ class DAG(BaseDag, LoggingMixin):
 
     def __eq__(self, other):
         return (
-            type(self) == type(other) and
-            # Use getattr() instead of __dict__ as __dict__ doesn't return
-            # correct values for properties.
-            all(getattr(self, c, None) == getattr(other, c, None)
-                for c in self._comps))
+                type(self) == type(other) and
+                # Use getattr() instead of __dict__ as __dict__ doesn't return
+                # correct values for properties.
+                all(getattr(self, c, None) == getattr(other, c, None)
+                    for c in self._comps))
 
     def __ne__(self, other):
         return not self == other
@@ -2994,10 +2997,10 @@ class DAG(BaseDag, LoggingMixin):
         """
         dagrun = (
             session.query(DagRun)
-            .filter(
+                .filter(
                 DagRun.dag_id == self.dag_id,
                 DagRun.execution_date == execution_date)
-            .first())
+                .first())
 
         return dagrun
 
@@ -3311,6 +3314,7 @@ class DAG(BaseDag, LoggingMixin):
         """
         Shows an ascii tree representation of the DAG
         """
+
         def get_downstream(task, level=0):
             print((" " * level * 4) + str(task))
             level += 1
@@ -3618,8 +3622,8 @@ class KnownEvent(Base):
     label = Column(String(200))
     start_date = Column(DateTime)
     end_date = Column(DateTime)
-    user_id = Column(Integer(), ForeignKey('users.id'),)
-    known_event_type_id = Column(Integer(), ForeignKey('known_event_type.id'),)
+    user_id = Column(Integer(), ForeignKey('users.id'), )
+    known_event_type_id = Column(Integer(), ForeignKey('known_event_type.id'), )
     reported_by = relationship(
         "User", cascade=False, cascade_backrefs=False, backref='known_events')
     event_type = relationship(
@@ -3814,9 +3818,9 @@ class XCom(Base):
 
         query = (
             session.query(cls.value)
-            .filter(and_(*filters))
-            .order_by(cls.execution_date.desc(), cls.timestamp.desc())
-            .limit(1))
+                .filter(and_(*filters))
+                .order_by(cls.execution_date.desc(), cls.timestamp.desc())
+                .limit(1))
 
         result = query.first()
         if result:
@@ -3850,9 +3854,9 @@ class XCom(Base):
 
         query = (
             session.query(cls)
-            .filter(and_(*filters))
-            .order_by(cls.execution_date.desc(), cls.timestamp.desc())
-            .limit(limit))
+                .filter(and_(*filters))
+                .order_by(cls.execution_date.desc(), cls.timestamp.desc())
+                .limit(limit))
 
         return query.all()
 
@@ -3943,8 +3947,8 @@ class DagStat(Base):
             dagstat_states = set(itertools.product(ids, State.dag_states))
             qry = (
                 session.query(DagRun.dag_id, DagRun.state, func.count('*'))
-                .filter(DagRun.dag_id.in_(ids))
-                .group_by(DagRun.dag_id, DagRun.state)
+                    .filter(DagRun.dag_id.in_(ids))
+                    .group_by(DagRun.dag_id, DagRun.state)
             )
 
             counts = {(dag_id, state): count for dag_id, state, count in qry}
@@ -4328,20 +4332,20 @@ class DagRun(Base):
         """Returns the latest running DagRun for each DAG. """
         subquery = (
             session
-            .query(
+                .query(
                 cls.dag_id,
                 func.max(cls.execution_date).label('execution_date'))
-            .filter(cls.state == State.RUNNING)
-            .group_by(cls.dag_id)
-            .subquery()
+                .filter(cls.state == State.RUNNING)
+                .group_by(cls.dag_id)
+                .subquery()
         )
         dagruns = (
             session
-            .query(cls)
-            .join(subquery,
-                  and_(cls.dag_id == subquery.c.dag_id,
-                       cls.execution_date == subquery.c.execution_date))
-            .all()
+                .query(cls)
+                .join(subquery,
+                      and_(cls.dag_id == subquery.c.dag_id,
+                           cls.execution_date == subquery.c.execution_date))
+                .all()
         )
         return dagruns
 
@@ -4364,10 +4368,10 @@ class Pool(Base):
         """
         running = (
             session
-            .query(TaskInstance)
-            .filter(TaskInstance.pool == self.pool)
-            .filter(TaskInstance.state == State.RUNNING)
-            .count()
+                .query(TaskInstance)
+                .filter(TaskInstance.pool == self.pool)
+                .filter(TaskInstance.state == State.RUNNING)
+                .count()
         )
         return running
 
@@ -4378,10 +4382,10 @@ class Pool(Base):
         """
         return (
             session
-            .query(TaskInstance)
-            .filter(TaskInstance.pool == self.pool)
-            .filter(TaskInstance.state == State.QUEUED)
-            .count()
+                .query(TaskInstance)
+                .filter(TaskInstance.pool == self.pool)
+                .filter(TaskInstance.state == State.QUEUED)
+                .count()
         )
 
     @provide_session

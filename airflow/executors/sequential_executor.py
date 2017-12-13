@@ -28,6 +28,7 @@ class SequentialExecutor(BaseExecutor):
     Since we want airflow to work out of the box, it defaults to this
     SequentialExecutor alongside sqlite as you first install it.
     """
+
     def __init__(self):
         super(SequentialExecutor, self).__init__()
         self.commands_to_run = []

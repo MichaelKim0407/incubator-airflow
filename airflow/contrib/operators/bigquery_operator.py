@@ -30,7 +30,7 @@ class BigQueryOperator(BaseOperator):
     @apply_defaults
     def __init__(self,
                  bql,
-                 destination_dataset_table = False,
+                 destination_dataset_table=False,
                  write_disposition='WRITE_EMPTY',
                  allow_large_results=False,
                  bigquery_conn_id='bigquery_default',

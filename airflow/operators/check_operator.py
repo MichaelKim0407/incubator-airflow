@@ -149,7 +149,7 @@ class ValueCheckOperator(BaseOperator):
                 num_rec = [float(r) for r in records]
             except (ValueError, TypeError) as e:
                 cvestr = "Converting a result to float failed.\n"
-                raise AirflowException(cvestr+except_temp.format(**locals()))
+                raise AirflowException(cvestr + except_temp.format(**locals()))
             if self.has_tolerance:
                 tests = [
                     r / (1 + self.tol) <= self.pass_value <= r / (1 - self.tol)
@@ -205,7 +205,7 @@ class IntervalCheckOperator(BaseOperator):
         sqlt = ("SELECT {sqlexp} FROM {table}"
                 " WHERE {date_filter_column}=").format(**locals())
         self.sql1 = sqlt + "'{{ ds }}'"
-        self.sql2 = sqlt + "'{{ macros.ds_add(ds, "+str(self.days_back)+") }}'"
+        self.sql2 = sqlt + "'{{ macros.ds_add(ds, " + str(self.days_back) + ") }}'"
 
     def execute(self, context=None):
         hook = self.get_db_hook()
@@ -230,7 +230,7 @@ class IntervalCheckOperator(BaseOperator):
                 ratio = None
             else:
                 ratio = float(max(current[m], reference[m])) / \
-                    min(current[m], reference[m])
+                        min(current[m], reference[m])
             logging.info(rlog.format(m, ratio, self.metrics_thresholds[m]))
             ratios[m] = ratio
             test_results[m] = ratio < self.metrics_thresholds[m]
@@ -241,7 +241,7 @@ class IntervalCheckOperator(BaseOperator):
             logging.warning(countstr.format(**locals()))
             for k in failed_tests:
                 logging.warning(fstr.format(k=k, r=ratios[k],
-                                tr=self.metrics_thresholds[k]))
+                                            tr=self.metrics_thresholds[k]))
             raise AirflowException(estr.format(", ".join(failed_tests)))
         logging.info("All tests have passed")
 

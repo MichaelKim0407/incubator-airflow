@@ -34,6 +34,7 @@ class HipChatAPIOperator(BaseOperator):
     :param base_url: HipChat REST API base url.
     :type base_url: str
     """
+
     @apply_defaults
     def __init__(self,
                  token,

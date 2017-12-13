@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from future import standard_library
+
 standard_library.install_aliases()
 from builtins import str
 import logging
@@ -27,7 +28,6 @@ from airflow.executors.base_executor import BaseExecutor
 from airflow.settings import Session
 from airflow.utils.state import State
 from airflow.exceptions import AirflowException
-
 
 DEFAULT_FRAMEWORK_NAME = 'Airflow'
 FRAMEWORK_CONNID_PREFIX = 'mesos_framework_'
@@ -122,8 +122,8 @@ class AirflowMesosScheduler(mesos.interface.Scheduler):
             remainingMem = offerMem
 
             while (not self.task_queue.empty()) and \
-                  remainingCpus >= self.task_cpu and \
-                  remainingMem >= self.task_mem:
+                    remainingCpus >= self.task_cpu and \
+                    remainingMem >= self.task_mem:
                 key, cmd = self.task_queue.get()
                 tid = self.task_counter
                 self.task_counter += 1
@@ -175,8 +175,8 @@ class AirflowMesosScheduler(mesos.interface.Scheduler):
             self.task_queue.task_done()
 
         if update.state == mesos_pb2.TASK_LOST or \
-           update.state == mesos_pb2.TASK_KILLED or \
-           update.state == mesos_pb2.TASK_FAILED:
+                update.state == mesos_pb2.TASK_KILLED or \
+                update.state == mesos_pb2.TASK_FAILED:
             self.result_queue.put((key, State.FAILED))
             self.task_queue.task_done()
 
@@ -237,7 +237,7 @@ class MesosExecutor(BaseExecutor):
             framework.checkpoint = False
 
         logging.info('MesosFramework master : %s, name : %s, cpu : %s, mem : %s, checkpoint : %s',
-            master, framework.name, str(task_cpu), str(task_memory), str(framework.checkpoint))
+                     master, framework.name, str(task_cpu), str(task_memory), str(framework.checkpoint))
 
         implicit_acknowledgements = 1
 

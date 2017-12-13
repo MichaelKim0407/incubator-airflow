@@ -14,6 +14,7 @@
 
 from __future__ import print_function
 from future import standard_library
+
 standard_library.install_aliases()
 from builtins import str
 from past.builtins import basestring
@@ -56,7 +57,7 @@ class BaseSensorOperator(BaseOperator):
     def __init__(
             self,
             poke_interval=60,
-            timeout=60*60*24*7,
+            timeout=60 * 60 * 24 * 7,
             soft_fail=False,
             *args, **kwargs):
         super(BaseSensorOperator, self).__init__(*args, **kwargs)
@@ -267,7 +268,7 @@ class NamedHivePartitionSensor(BaseSensorOperator):
     :type metastore_conn_id: str
     """
 
-    template_fields = ('partition_names', )
+    template_fields = ('partition_names',)
     ui_color = '#8d99ae'
 
     @apply_defaults
@@ -351,7 +352,7 @@ class HivePartitionSensor(BaseSensorOperator):
             table, partition="ds='{{ ds }}'",
             metastore_conn_id='metastore_default',
             schema='default',
-            poke_interval=60*3,
+            poke_interval=60 * 3,
             *args, **kwargs):
         super(HivePartitionSensor, self).__init__(
             poke_interval=poke_interval, *args, **kwargs)

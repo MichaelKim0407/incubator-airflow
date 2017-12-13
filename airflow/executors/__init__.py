@@ -35,6 +35,7 @@ def _integrate_plugins():
         sys.modules[executors_module.__name__] = executors_module
         globals()[executors_module._name] = executors_module
 
+
 _EXECUTOR = configuration.get('core', 'EXECUTOR')
 
 if _EXECUTOR == 'LocalExecutor':
@@ -45,6 +46,7 @@ elif _EXECUTOR == 'SequentialExecutor':
     DEFAULT_EXECUTOR = SequentialExecutor()
 elif _EXECUTOR == 'MesosExecutor':
     from airflow.contrib.executors.mesos_executor import MesosExecutor
+
     DEFAULT_EXECUTOR = MesosExecutor()
 else:
     # Loading plugins

@@ -36,6 +36,7 @@ class Resource(object):
         execution of the operator.
     :type qty: long
     """
+
     def __init__(self, name, units_str, qty):
         if qty < 0:
             raise AirflowException(
@@ -99,6 +100,7 @@ class Resources(object):
     :param gpus: The number of gpu units that are required
     :type gpus: long
     """
+
     def __init__(self, cpus=None, ram=None, disk=None, gpus=None):
         if cpus is None:
             cpus = configuration.getint('operators', 'default_cpus')

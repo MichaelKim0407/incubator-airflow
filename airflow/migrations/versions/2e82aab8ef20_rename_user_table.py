@@ -36,4 +36,3 @@ def upgrade():
 
 def downgrade():
     op.rename_table('users', 'user')
-

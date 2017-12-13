@@ -30,15 +30,18 @@ version = imp.load_source(
 
 class Tox(TestCommand):
     user_options = [('tox-args=', None, "Arguments to pass to tox")]
+
     def initialize_options(self):
         TestCommand.initialize_options(self)
         self.tox_args = ''
+
     def finalize_options(self):
         TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
+
     def run_tests(self):
-        #import here, cause outside the eggs aren't loaded
+        # import here, cause outside the eggs aren't loaded
         import tox
         errno = tox.cmdline(args=self.tox_args.split())
         sys.exit(errno)
@@ -47,10 +50,13 @@ class Tox(TestCommand):
 class CleanCommand(Command):
     """Custom clean command to tidy up the project root."""
     user_options = []
+
     def initialize_options(self):
         pass
+
     def finalize_options(self):
         pass
+
     def run(self):
         os.system('rm -vrf ./build ./dist ./*.pyc ./*.tgz ./*.egg-info')
 
@@ -175,7 +181,7 @@ password = [
 ]
 github_enterprise = ['Flask-OAuthlib>=0.9.1']
 qds = ['qds-sdk>=1.9.6']
-cloudant = ['cloudant>=0.5.9,<2.0'] # major update coming soon, clamp to 0.x
+cloudant = ['cloudant>=0.5.9,<2.0']  # major update coming soon, clamp to 0.x
 
 all_dbs = postgres + mysql + hive + mssql + hdfs + vertica + cloudant
 devel = [
@@ -290,7 +296,7 @@ def do_setup():
         author_email='dev@airflow.incubator.apache.org',
         url='http://airflow.incubator.apache.org/',
         download_url=(
-            'https://dist.apache.org/repos/dist/release/incubator/airflow/' + version),
+                'https://dist.apache.org/repos/dist/release/incubator/airflow/' + version),
         cmdclass={
             'test': Tox,
             'extra_clean': CleanCommand,

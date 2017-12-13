@@ -61,4 +61,5 @@ class EmailOperator(BaseOperator):
         self.mime_subtype = mime_subtype
 
     def execute(self, context):
-        send_email(self.to, self.subject, self.html_content, files=self.files, cc=self.cc, bcc=self.bcc, mime_subtype=self.mime_subtype)
+        send_email(self.to, self.subject, self.html_content, files=self.files, cc=self.cc, bcc=self.bcc,
+                   mime_subtype=self.mime_subtype)

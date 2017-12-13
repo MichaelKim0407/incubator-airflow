@@ -37,8 +37,8 @@ class DagrunRunningDep(BaseTIDep):
             if len(running_dagruns) >= dag.max_active_runs:
                 reason = ("The maximum number of active dag runs ({0}) for this task "
                           "instance's DAG '{1}' has been reached.".format(
-                              dag.max_active_runs,
-                              ti.dag_id))
+                    dag.max_active_runs,
+                    ti.dag_id))
             else:
                 reason = "Unknown reason"
             yield self._failing_status(

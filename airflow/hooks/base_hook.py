@@ -37,6 +37,7 @@ class BaseHook(object):
     instances of these systems, and expose consistent methods to interact
     with them.
     """
+
     def __init__(self, source):
         pass
 
@@ -45,8 +46,8 @@ class BaseHook(object):
         session = settings.Session()
         db = (
             session.query(Connection)
-            .filter(Connection.conn_id == conn_id)
-            .all()
+                .filter(Connection.conn_id == conn_id)
+                .all()
         )
         session.expunge_all()
         session.close()

@@ -21,7 +21,6 @@ from airflow.www import app as application
 
 
 class TestPoolModelView(unittest.TestCase):
-
     CREATE_ENDPOINT = '/admin/pool/new/?url=/admin/pool/'
 
     @classmethod

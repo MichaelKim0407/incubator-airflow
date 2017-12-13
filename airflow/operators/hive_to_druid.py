@@ -50,7 +50,8 @@ class HiveToDruidTransfer(BaseOperator):
 
     template_fields = ('sql', 'intervals')
     template_ext = ('.sql',)
-    #ui_color = '#a0e08c'
+
+    # ui_color = '#a0e08c'
 
     @apply_defaults
     def __init__(

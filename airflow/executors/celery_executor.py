@@ -47,6 +47,7 @@ class CeleryConfig(object):
     CELERY_DEFAULT_QUEUE = DEFAULT_QUEUE
     CELERY_DEFAULT_EXCHANGE = DEFAULT_QUEUE
 
+
 app = Celery(
     configuration.get('celery', 'CELERY_APP_NAME'),
     config_source=CeleryConfig)
@@ -77,8 +78,8 @@ class CeleryExecutor(BaseExecutor):
         self.last_state = {}
 
     def execute_async(self, key, command, queue=DEFAULT_QUEUE):
-        self.logger.info( "[celery] queuing {key} through celery, "
-                       "queue={queue}".format(**locals()))
+        self.logger.info("[celery] queuing {key} through celery, "
+                         "queue={queue}".format(**locals()))
         self.tasks[key] = execute_command.apply_async(
             args=[command], queue=queue)
         self.last_state[key] = celery_states.PENDING
@@ -109,7 +110,7 @@ class CeleryExecutor(BaseExecutor):
     def end(self, synchronous=False):
         if synchronous:
             while any([
-                    async.state not in celery_states.READY_STATES
-                    for async in self.tasks.values()]):
+                async.state not in celery_states.READY_STATES
+                for async in self.tasks.values()]):
                 time.sleep(5)
         self.sync()

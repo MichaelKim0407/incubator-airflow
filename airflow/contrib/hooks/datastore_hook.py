@@ -96,7 +96,7 @@ class DatastoreHook(GoogleCloudBaseHook):
         see https://cloud.google.com/datastore/docs/apis/v1beta2/datasets/rollback
         :param transaction: the transaction to roll back
         """
-        self.connection.datasets().rollback(datasetId=self.dataset_id, body={'transaction': transaction})\
+        self.connection.datasets().rollback(datasetId=self.dataset_id, body={'transaction': transaction}) \
             .execute()
 
     def run_query(self, body):

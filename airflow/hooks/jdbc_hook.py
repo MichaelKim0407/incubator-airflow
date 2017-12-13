@@ -54,7 +54,7 @@ class JdbcHook(DbApiHook):
 
         conn = jaydebeapi.connect(jdbc_driver_name,
                                   [str(host), str(login), str(psw)],
-                                  jdbc_driver_loc,)
+                                  jdbc_driver_loc, )
         return conn
 
     def set_autocommit(self, conn, autocommit):

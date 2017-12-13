@@ -23,6 +23,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from future.standard_library import install_aliases
+
 install_aliases()
 
 import kerberos
@@ -125,4 +126,5 @@ def requires_authentication(function):
             elif rc != kerberos.AUTH_GSS_CONTINUE:
                 return _forbidden()
         return _unauthorized()
+
     return decorated

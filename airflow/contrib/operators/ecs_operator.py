@@ -22,7 +22,6 @@ from airflow.contrib.hooks.aws_hook import AwsHook
 
 
 class ECSOperator(BaseOperator):
-
     """
     Execute a task on AWS EC2 Container Service
 
@@ -112,7 +111,8 @@ class ECSOperator(BaseOperator):
                 elif container.get('lastStatus') == 'PENDING':
                     raise AirflowException('This task is still pending {}'.format(task))
                 elif 'error' in container.get('reason', '').lower():
-                    raise AirflowException('This containers encounter an error during launching : {}'.format(container.get('reason', '').lower()))
+                    raise AirflowException('This containers encounter an error during launching : {}'.format(
+                        container.get('reason', '').lower()))
 
     def get_hook(self):
         return AwsHook(

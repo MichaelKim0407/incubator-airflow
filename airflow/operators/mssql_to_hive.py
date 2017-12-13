@@ -19,7 +19,6 @@ import logging
 from tempfile import NamedTemporaryFile
 import pymssql
 
-
 from airflow.hooks.hive_hooks import HiveCliHook
 from airflow.hooks.mssql_hook import MsSqlHook
 from airflow.models import BaseOperator

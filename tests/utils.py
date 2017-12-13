@@ -57,6 +57,7 @@ class LogUtilsTest(unittest.TestCase):
             glog.parse_gcs_url('gs://bucket/'),
             ('bucket', ''))
 
+
 class OperatorResourcesTest(unittest.TestCase):
 
     def setUp(self):

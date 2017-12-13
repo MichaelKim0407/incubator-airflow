@@ -27,6 +27,7 @@ class CloudantHook(BaseHook):
     This class is a thin wrapper around the cloudant python library. See the
     documentation `here <https://github.com/cloudant-labs/cloudant-python>`_.
     """
+
     def __init__(self, cloudant_conn_id='cloudant_default'):
         super(CloudantHook, self).__init__('cloudant')
         self.cloudant_conn_id = cloudant_conn_id

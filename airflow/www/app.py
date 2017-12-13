@@ -20,6 +20,7 @@ from flask import Flask
 from flask_admin import Admin, base
 from flask_cache import Cache
 from flask_wtf.csrf import CsrfProtect
+
 csrf = CsrfProtect()
 
 import airflow
@@ -79,7 +80,7 @@ def create_app(config=None, testing=False):
             models.SlaMiss,
             Session, name="SLA Misses", category="Browse"))
         av(vs.TaskInstanceModelView(models.TaskInstance,
-            Session, name="Task Instances", category="Browse"))
+                                    Session, name="Task Instances", category="Browse"))
         av(vs.LogModelView(
             models.Log, Session, name="Logs", category="Browse"))
         av(vs.JobModelView(
@@ -102,7 +103,7 @@ def create_app(config=None, testing=False):
             url='http://pythonhosted.org/airflow/'))
         admin.add_link(
             base.MenuLink(category='Docs',
-                name='Github',url='https://github.com/airbnb/airflow'))
+                          name='Github', url='https://github.com/airbnb/airflow'))
 
         av(vs.VersionView(name='Version', category="About"))
 
@@ -151,6 +152,7 @@ def create_app(config=None, testing=False):
             settings.Session.remove()
 
         return app
+
 
 app = None
 

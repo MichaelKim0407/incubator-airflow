@@ -62,7 +62,7 @@ def trigger_dag(dag_id):
             error_message = (
                 'Given execution date, {}, could not be identified '
                 'as a date. Example date format: 2015-11-16T14:34:15'
-                .format(execution_date))
+                    .format(execution_date))
             _log.info(error_message)
             response = jsonify({'error': error_message})
             response.status_code = 400
@@ -104,7 +104,7 @@ def task_info(dag_id, task_id):
     dag = dagbag.dags[dag_id]
     if not dag.has_task(task_id):
         response = (jsonify(error='Task {} not found in dag {}'
-                    .format(task_id, dag_id)))
+                            .format(task_id, dag_id)))
         response.status_code = 404
         return response
 
@@ -130,4 +130,4 @@ def latest_dag_runs():
                 'dag_run_url': url_for('airflow.graph', dag_id=dagrun.dag_id,
                                        execution_date=dagrun.execution_date)
             })
-    return jsonify(items=payload) # old flask versions dont support jsonifying arrays
+    return jsonify(items=payload)  # old flask versions dont support jsonifying arrays

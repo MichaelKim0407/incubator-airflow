@@ -38,6 +38,7 @@ def my_py_command(ds, **kwargs):
     print(" 'miff' was passed in via task params = {}".format(kwargs["params"]["miff"]))
     return 1
 
+
 my_templated_command = """
     echo " 'foo was passed in via Airflow CLI Test command with value {{ params.foo }} "
     echo " 'miff was passed in via BashOperator with value {{ params.miff }} "
@@ -47,12 +48,12 @@ run_this = PythonOperator(
     task_id='run_this',
     provide_context=True,
     python_callable=my_py_command,
-    params={"miff":"agg"},
+    params={"miff": "agg"},
     dag=dag)
 
 also_run_this = BashOperator(
     task_id='also_run_this',
     bash_command=my_templated_command,
-    params={"miff":"agg"},
+    params={"miff": "agg"},
     dag=dag)
 also_run_this.set_upstream(run_this)

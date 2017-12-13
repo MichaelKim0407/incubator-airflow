@@ -18,7 +18,6 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.models import DAG
 import random
 
-
 args = {
     'owner': 'airflow',
     'start_date': airflow.utils.dates.days_ago(2)

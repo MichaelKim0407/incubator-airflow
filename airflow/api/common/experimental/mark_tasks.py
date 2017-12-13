@@ -153,7 +153,7 @@ def set_state(task, execution_date, upstream=False, downstream=False,
 
     # get all tasks of the main dag that will be affected by a state change
     qry_dag = session.query(TI).filter(
-        TI.dag_id==dag.dag_id,
+        TI.dag_id == dag.dag_id,
         TI.execution_date.in_(confirmed_dates),
         TI.task_id.in_(task_ids)).filter(
         or_(TI.state.is_(None),
@@ -184,4 +184,3 @@ def set_state(task, execution_date, upstream=False, downstream=False,
     session.close()
 
     return tis_altered
-

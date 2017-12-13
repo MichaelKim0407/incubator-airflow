@@ -29,13 +29,12 @@ from qds_sdk.commands import Command, HiveCommand, PrestoCommand, HadoopCommand,
     PigCommand, ShellCommand, SparkCommand, DbTapQueryCommand, DbExportCommand, \
     DbImportCommand
 
-
 COMMAND_CLASSES = {
     "hivecmd": HiveCommand,
     "prestocmd": PrestoCommand,
     "hadoopcmd": HadoopCommand,
     "shellcmd": ShellCommand,
-    "pigcmd":  PigCommand,
+    "pigcmd": PigCommand,
     "sparkcmd": SparkCommand,
     "dbtapquerycmd": DbTapQueryCommand,
     "dbexportcmd": DbExportCommand,
@@ -112,7 +111,7 @@ class QuboleHook(BaseHook):
 
         if self.cmd.status != 'done':
             raise AirflowException('Command Id: {0} failed with Status: {1}'.format(
-                                   self.cmd.id, self.cmd.status))
+                self.cmd.id, self.cmd.status))
 
     def kill(self, ti):
         """
@@ -179,10 +178,10 @@ class QuboleHook(BaseHook):
         inplace_args = None
         tags = set([self.dag_id, self.task_id, context['run_id']])
 
-        for k,v in self.kwargs.items():
+        for k, v in self.kwargs.items():
             if k in COMMAND_ARGS[cmd_type]:
                 if k in HYPHEN_ARGS:
-                    args.append("--{0}={1}".format(k.replace('_', '-'),v))
+                    args.append("--{0}={1}".format(k.replace('_', '-'), v))
                 elif k in POSITIONAL_ARGS:
                     inplace_args = v
                 elif k == 'tags':
@@ -192,12 +191,12 @@ class QuboleHook(BaseHook):
                         for val in v:
                             tags.add(val)
                 else:
-                    args.append("--{0}={1}".format(k,v))
+                    args.append("--{0}={1}".format(k, v))
 
             if k == 'notify' and v is True:
                 args.append("--notify")
 
-        args.append("--tags={0}".format(','.join(filter(None,tags))))
+        args.append("--tags={0}".format(','.join(filter(None, tags))))
 
         if inplace_args is not None:
             if cmd_type == 'hadoopcmd':

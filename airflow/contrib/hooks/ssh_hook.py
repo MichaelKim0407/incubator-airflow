@@ -50,6 +50,7 @@ class SSHHook(BaseHook):
         sshpass.
     :type sshpass: bool
     """
+
     def __init__(self, conn_id='ssh_default'):
         conn = self.get_connection(conn_id)
         self.key_file = conn.extra_dejson.get('key_file', None)
@@ -127,7 +128,7 @@ class SSHHook(BaseHook):
         if p.returncode != 0:
             # I like this better: RemoteCalledProcessError(p.returncode, cmd, self.host, output=output)
             raise AirflowException("Cannot execute {} on {}. Error code is: {}. Output: {}, Stderr: {}".format(
-                                   cmd, self.conn.host, p.returncode, output, stderr))
+                cmd, self.conn.host, p.returncode, output, stderr))
 
         return output
 
@@ -155,4 +156,3 @@ class SSHHook(BaseHook):
         yield
         proc.communicate()
         assert proc.returncode == 0, "Tunnel process did unclean exit (returncode {}".format(proc.returncode)
-

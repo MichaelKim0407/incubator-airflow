@@ -21,6 +21,7 @@ in their PYTHONPATH. airflow_login should be based off the
 """
 from builtins import object
 from airflow import version
+
 __version__ = version.version
 
 import logging
@@ -71,6 +72,7 @@ class AirflowViewPlugin(BaseView):
 class AirflowMacroPlugin(object):
     def __init__(self, namespace):
         self.namespace = namespace
+
 
 from airflow import operators
 from airflow import hooks

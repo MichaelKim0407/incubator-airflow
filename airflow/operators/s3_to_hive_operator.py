@@ -29,6 +29,7 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from airflow.utils.compression import uncompress_file
 
+
 class S3ToHiveTransfer(BaseOperator):
     """
     Moves data from S3 to Hive. The operator downloads a file from S3,
@@ -138,7 +139,7 @@ class S3ToHiveTransfer(BaseOperator):
                     "The key {0} does not exists".format(self.s3_key))
             s3_key_object = self.s3.get_key(self.s3_key)
         root, file_ext = os.path.splitext(s3_key_object.key)
-        with TemporaryDirectory(prefix='tmps32hive_') as tmp_dir,\
+        with TemporaryDirectory(prefix='tmps32hive_') as tmp_dir, \
                 NamedTemporaryFile(mode="w",
                                    dir=tmp_dir,
                                    suffix=file_ext) as f:
@@ -236,7 +237,7 @@ class S3ToHiveTransfer(BaseOperator):
 
         os_fh_output, fn_output = \
             tempfile.mkstemp(suffix=output_file_ext, dir=dest_dir)
-        with open(input_file_name, 'rb') as f_in,\
+        with open(input_file_name, 'rb') as f_in, \
                 open_fn(fn_output, 'wb') as f_out:
             f_in.seek(0)
             next(f_in)

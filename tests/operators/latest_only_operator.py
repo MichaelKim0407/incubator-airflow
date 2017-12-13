@@ -96,7 +96,7 @@ class LatestOnlyOperatorTest(unittest.TestCase):
         self.assertEqual({
             datetime.datetime(2016, 1, 1): 'skipped',
             datetime.datetime(2016, 1, 1, 12): 'skipped',
-            datetime.datetime(2016, 1, 2): 'success',},
+            datetime.datetime(2016, 1, 2): 'success', },
             exec_date_to_downstream_state)
 
         downstream_instances = get_task_instances('downstream_2')
@@ -105,7 +105,7 @@ class LatestOnlyOperatorTest(unittest.TestCase):
         self.assertEqual({
             datetime.datetime(2016, 1, 1): 'skipped',
             datetime.datetime(2016, 1, 1, 12): 'skipped',
-            datetime.datetime(2016, 1, 2): 'success',},
+            datetime.datetime(2016, 1, 2): 'success', },
             exec_date_to_downstream_state)
 
     def test_skipping_dagrun(self):
@@ -162,7 +162,7 @@ class LatestOnlyOperatorTest(unittest.TestCase):
         self.assertEqual({
             datetime.datetime(2016, 1, 1): 'skipped',
             datetime.datetime(2016, 1, 1, 12): 'skipped',
-            datetime.datetime(2016, 1, 2): 'success',},
+            datetime.datetime(2016, 1, 2): 'success', },
             exec_date_to_downstream_state)
 
         downstream_instances = get_task_instances('downstream_2')
@@ -171,5 +171,5 @@ class LatestOnlyOperatorTest(unittest.TestCase):
         self.assertEqual({
             datetime.datetime(2016, 1, 1): 'skipped',
             datetime.datetime(2016, 1, 1, 12): 'skipped',
-            datetime.datetime(2016, 1, 2): 'success',},
+            datetime.datetime(2016, 1, 2): 'success', },
             exec_date_to_downstream_state)

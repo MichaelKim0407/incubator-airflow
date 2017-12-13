@@ -78,10 +78,10 @@ def group_contains_user(conn, search_base, group_filter, user_name_attr, usernam
     else:
         for resp in conn.response:
             if (
-                        'attributes' in resp and (
-                            resp['attributes'].get(user_name_attr)[0] == username or
-                            resp['attributes'].get(user_name_attr) == username
-                )
+                    'attributes' in resp and (
+                    resp['attributes'].get(user_name_attr)[0] == username or
+                    resp['attributes'].get(user_name_attr) == username
+            )
             ):
                 return True
     return False
@@ -200,7 +200,8 @@ class LdapUser(models.User):
             Unable to parse LDAP structure. If you're using Active Directory and not specifying an OU, you must set search_scope=SUBTREE in airflow.cfg.
             %s
             """ % traceback.format_exc())
-            raise LdapException("Could not parse LDAP structure. Try setting search_scope in airflow.cfg, or check logs")
+            raise LdapException(
+                "Could not parse LDAP structure. Try setting search_scope in airflow.cfg, or check logs")
 
         if not conn:
             LOG.info("Password incorrect for user %s", username)

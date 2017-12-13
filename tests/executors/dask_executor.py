@@ -25,6 +25,7 @@ from airflow.operators.python_operator import PythonOperator
 try:
     from airflow.executors.dask_executor import DaskExecutor
     from distributed import LocalCluster
+
     SKIP_DASK = False
 except ImportError:
     logging.error('Dask unavailable, skipping DaskExecutor tests')
@@ -79,7 +80,6 @@ class DaskExecutorTest(unittest.TestCase):
         self.assertTrue(fail_future.exception() is not None)
 
         cluster.close()
-
 
     @unittest.skipIf(SKIP_DASK, 'Dask unsupported by this configuration')
     def test_backfill_integration(self):

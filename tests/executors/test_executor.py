@@ -21,6 +21,7 @@ class TestExecutor(BaseExecutor):
     """
     TestExecutor is used for unit testing purposes.
     """
+
     def __init__(self, do_update=False, *args, **kwargs):
         self.do_update = do_update
         self._running = []
@@ -53,4 +54,3 @@ class TestExecutor(BaseExecutor):
 
     def end(self):
         self.sync()
-

@@ -39,13 +39,14 @@ def provide_session(func):
     database transaction, you pass it to the function, if not this wrapper
     will create one and close it for you.
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         needs_session = False
         arg_session = 'session'
         func_params = func.__code__.co_varnames
         session_in_args = arg_session in func_params and \
-            func_params.index(arg_session) < len(args)
+                          func_params.index(arg_session) < len(args)
         if not (arg_session in kwargs or session_in_args):
             needs_session = True
             session = settings.Session()
@@ -56,6 +57,7 @@ def provide_session(func):
             session.commit()
             session.close()
         return result
+
     return wrapper
 
 
@@ -136,7 +138,7 @@ def initdb():
     merge_conn(
         models.Connection(
             conn_id='hive_cli_default', conn_type='hive_cli',
-            schema='default',))
+            schema='default', ))
     merge_conn(
         models.Connection(
             conn_id='hiveserver2_default', conn_type='hiveserver2',

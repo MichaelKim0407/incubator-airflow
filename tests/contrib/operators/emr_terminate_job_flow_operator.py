@@ -36,10 +36,8 @@ class TestEmrTerminateJobFlowOperator(unittest.TestCase):
         # Mock out the emr_client creator
         self.boto3_client_mock = MagicMock(return_value=mock_emr_client)
 
-
     def test_execute_terminates_the_job_flow_and_does_not_error(self):
         with patch('boto3.client', self.boto3_client_mock):
-
             operator = EmrTerminateJobFlowOperator(
                 task_id='test_task',
                 job_flow_id='j-8989898989',
@@ -47,6 +45,7 @@ class TestEmrTerminateJobFlowOperator(unittest.TestCase):
             )
 
             operator.execute(None)
+
 
 if __name__ == '__main__':
     unittest.main()

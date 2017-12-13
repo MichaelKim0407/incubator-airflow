@@ -57,6 +57,7 @@ class DepContext(object):
     :param ignore_ti_state: Ignore the task instance's previous failure/success
     :type ignore_ti_state: boolean
     """
+
     def __init__(
             self,
             deps=None,
@@ -73,6 +74,7 @@ class DepContext(object):
         self.ignore_in_retry_period = ignore_in_retry_period
         self.ignore_task_deps = ignore_task_deps
         self.ignore_ti_state = ignore_ti_state
+
 
 # In order to be able to get queued a task must have one of these states
 QUEUEABLE_STATES = {

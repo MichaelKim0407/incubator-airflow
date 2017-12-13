@@ -36,6 +36,7 @@ class WebHDFSHook(BaseHook):
     """
     Interact with HDFS. This class is a wrapper around the hdfscli library.
     """
+
     def __init__(self, webhdfs_conn_id='webhdfs_default', proxy_user=None):
         self.webhdfs_conn_id = webhdfs_conn_id
         self.proxy_user = proxy_user

@@ -26,6 +26,7 @@ class SqoopOperator(BaseOperator):
     """
     execute sqoop job
     """
+
     @apply_defaults
     def __init__(self,
                  conn_id='sqoop_default',

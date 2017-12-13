@@ -21,7 +21,6 @@ from airflow.settings import Session
 from airflow.utils.dates import days_ago
 from airflow.utils.state import State
 
-
 DEV_NULL = "/dev/null"
 
 
@@ -54,7 +53,7 @@ class TestMarkTasks(unittest.TestCase):
     def snapshot_state(self, dag, execution_dates):
         TI = models.TaskInstance
         tis = self.session.query(TI).filter(
-            TI.dag_id==dag.dag_id,
+            TI.dag_id == dag.dag_id,
             TI.execution_date.in_(execution_dates)
         ).all()
 
@@ -66,7 +65,7 @@ class TestMarkTasks(unittest.TestCase):
         TI = models.TaskInstance
 
         tis = self.session.query(TI).filter(
-            TI.dag_id==dag.dag_id,
+            TI.dag_id == dag.dag_id,
             TI.execution_date.in_(execution_dates)
         ).all()
 
@@ -79,7 +78,7 @@ class TestMarkTasks(unittest.TestCase):
                 for old_ti in old_tis:
                     if (old_ti.task_id == ti.task_id
                             and old_ti.execution_date == ti.execution_date):
-                            self.assertEqual(ti.state, old_ti.state)
+                        self.assertEqual(ti.state, old_ti.state)
 
     def test_mark_tasks_now(self):
         # set one task to success but do not commit
@@ -206,6 +205,7 @@ class TestMarkTasks(unittest.TestCase):
         self.session.commit()
 
         self.session.close()
+
 
 if __name__ == '__main__':
     unittest.main()

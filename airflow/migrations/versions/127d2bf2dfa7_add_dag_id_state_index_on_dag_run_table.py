@@ -28,10 +28,10 @@ depends_on = None
 from alembic import op
 import sqlalchemy as sa
 
+
 def upgrade():
     op.create_index('dag_id_state', 'dag_run', ['dag_id', 'state'], unique=False)
 
 
 def downgrade():
     op.drop_index('dag_id_state', table_name='dag_run')
-

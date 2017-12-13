@@ -62,9 +62,9 @@ class SchedulerMetricsJob(SchedulerJob):
         TI = TaskInstance
         tis = (
             session
-            .query(TI)
-            .filter(TI.dag_id.in_(DAG_IDS))
-            .all()
+                .query(TI)
+                .filter(TI.dag_id.in_(DAG_IDS))
+                .all()
         )
         successful_tis = filter(lambda x: x.state == State.SUCCESS, tis)
         ti_perf = [(ti.dag_id, ti.task_id, ti.execution_date,
@@ -87,8 +87,8 @@ class SchedulerMetricsJob(SchedulerJob):
         if len(tis) > len(successful_tis):
             print("WARNING!! The following task instances haven't completed")
             print(pd.DataFrame([(ti.dag_id, ti.task_id, ti.execution_date, ti.state)
-                  for ti in filter(lambda x: x.state != State.SUCCESS, tis)],
-                  columns=['dag_id', 'task_id', 'execution_date', 'state']))
+                                for ti in filter(lambda x: x.state != State.SUCCESS, tis)],
+                               columns=['dag_id', 'task_id', 'execution_date', 'state']))
 
         session.commit()
 
@@ -102,10 +102,10 @@ class SchedulerMetricsJob(SchedulerJob):
         TI = TaskInstance
         successful_tis = (
             session
-            .query(TI)
-            .filter(TI.dag_id.in_(DAG_IDS))
-            .filter(TI.state.in_([State.SUCCESS]))
-            .all()
+                .query(TI)
+                .filter(TI.dag_id.in_(DAG_IDS))
+                .filter(TI.state.in_([State.SUCCESS]))
+                .all()
         )
         session.commit()
 
@@ -113,10 +113,10 @@ class SchedulerMetricsJob(SchedulerJob):
         dags = [dagbag.dags[dag_id] for dag_id in DAG_IDS]
         # the tasks in perf_dag_1 and per_dag_2 have a daily schedule interval.
         num_task_instances = sum([(datetime.today() - task.start_date).days
-                                 for dag in dags for task in dag.tasks])
+                                  for dag in dags for task in dag.tasks])
 
         if (len(successful_tis) == num_task_instances or
-                (datetime.now()-self.start_date).total_seconds() >
+                (datetime.now() - self.start_date).total_seconds() >
                 MAX_RUNTIME_SECS):
             if (len(successful_tis) == num_task_instances):
                 self.logger.info("All tasks processed! Printing stats.")
@@ -149,9 +149,9 @@ def clear_dag_task_instances():
     TI = TaskInstance
     tis = (
         session
-        .query(TI)
-        .filter(TI.dag_id.in_(DAG_IDS))
-        .all()
+            .query(TI)
+            .filter(TI.dag_id.in_(DAG_IDS))
+            .all()
     )
     for ti in tis:
         logging.info('Deleting TaskInstance :: {}'.format(ti))

@@ -60,8 +60,8 @@ class FileToGoogleCloudStorageOperator(BaseOperator):
         Uploads the file to Google cloud storage
         """
         hook = GoogleCloudStorageHook(
-                google_cloud_storage_conn_id=self.google_cloud_storage_conn_id,
-                delegate_to=self.delegate_to)
+            google_cloud_storage_conn_id=self.google_cloud_storage_conn_id,
+            delegate_to=self.delegate_to)
 
         hook.upload(
             bucket=self.bucket,

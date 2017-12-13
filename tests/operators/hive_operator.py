@@ -22,18 +22,18 @@ import nose
 import six
 
 from airflow import DAG, configuration, operators
-configuration.load_test_config()
 
+configuration.load_test_config()
 
 DEFAULT_DATE = datetime.datetime(2015, 1, 1)
 DEFAULT_DATE_ISO = DEFAULT_DATE.isoformat()
 DEFAULT_DATE_DS = DEFAULT_DATE_ISO[:10]
 
-
 if 'AIRFLOW_RUNALL_TESTS' in os.environ:
 
     import airflow.hooks.hive_hooks
     import airflow.operators.presto_to_mysql
+
 
     class HiveServer2Test(unittest.TestCase):
         def setUp(self):
@@ -147,6 +147,7 @@ if 'AIRFLOW_RUNALL_TESTS' in os.environ:
             (args, kwargs) = self.connect_mock.call_args_list[0]
             assert args[0] == sql
             assert kwargs['schema'] == self.nondefault_schema
+
 
     class HivePrestoTest(unittest.TestCase):
 

@@ -45,6 +45,7 @@ class S3Log(object):
     Requires airflow[s3] and setting the REMOTE_BASE_LOG_FOLDER and
     REMOTE_LOG_CONN_ID configuration options in airflow.cfg.
     """
+
     def __init__(self):
         remote_conn_id = configuration.get('core', 'REMOTE_LOG_CONN_ID')
         try:
@@ -120,6 +121,7 @@ class GCSLog(object):
     airflow[gcp_api] and setting the REMOTE_BASE_LOG_FOLDER and
     REMOTE_LOG_CONN_ID configuration options in airflow.cfg.
     """
+
     def __init__(self):
         """
         Attempt to create hook with airflow[gcp_api].

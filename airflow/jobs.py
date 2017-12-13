@@ -59,7 +59,6 @@ from airflow.utils.email import send_email
 from airflow.utils.logging import LoggingMixin
 from airflow.utils import asciiart
 
-
 Base = models.Base
 ID_LEN = models.ID_LEN
 
@@ -75,7 +74,7 @@ class BaseJob(Base, LoggingMixin):
     __tablename__ = "job"
 
     id = Column(Integer, primary_key=True)
-    dag_id = Column(String(ID_LEN),)
+    dag_id = Column(String(ID_LEN), )
     state = Column(String(20))
     job_type = Column(String(30))
     start_date = Column(DateTime())
@@ -110,8 +109,8 @@ class BaseJob(Base, LoggingMixin):
 
     def is_alive(self):
         return (
-            (datetime.now() - self.latest_heartbeat).seconds <
-            (conf.getint('scheduler', 'JOB_HEARTBEAT_SEC') * 2.1)
+                (datetime.now() - self.latest_heartbeat).seconds <
+                (conf.getint('scheduler', 'JOB_HEARTBEAT_SEC') * 2.1)
         )
 
     def kill(self):
@@ -307,6 +306,7 @@ class DagFileProcessor(AbstractDagFileProcessor):
         :return: the process that was launched
         :rtype: multiprocessing.Process
         """
+
         def helper():
             # This helper runs in the newly created process
 
@@ -564,20 +564,20 @@ class SchedulerJob(BaseJob):
         """
         if not any([ti.sla for ti in dag.tasks]):
             self.logger.info("Skipping SLA check for {} because "
-              "no tasks in DAG have SLAs".format(dag))
+                             "no tasks in DAG have SLAs".format(dag))
             return
 
         TI = models.TaskInstance
         sq = (
             session
-            .query(
+                .query(
                 TI.task_id,
                 func.max(TI.execution_date).label('max_ti'))
-            .with_hint(TI, 'USE INDEX (PRIMARY)', dialect_name='mysql')
-            .filter(TI.dag_id == dag.dag_id)
-            .filter(TI.state == State.SUCCESS)
-            .filter(TI.task_id.in_(dag.task_ids))
-            .group_by(TI.task_id).subquery('sq')
+                .with_hint(TI, 'USE INDEX (PRIMARY)', dialect_name='mysql')
+                .filter(TI.dag_id == dag.dag_id)
+                .filter(TI.state == State.SUCCESS)
+                .filter(TI.task_id.in_(dag.task_ids))
+                .group_by(TI.task_id).subquery('sq')
         )
 
         max_tis = session.query(TI).filter(
@@ -606,22 +606,22 @@ class SchedulerJob(BaseJob):
 
         slas = (
             session
-            .query(SlaMiss)
-            .filter(or_(SlaMiss.email_sent == False,
-                        SlaMiss.notification_sent == False))
-            .filter(SlaMiss.dag_id == dag.dag_id)
-            .all()
+                .query(SlaMiss)
+                .filter(or_(SlaMiss.email_sent == False,
+                            SlaMiss.notification_sent == False))
+                .filter(SlaMiss.dag_id == dag.dag_id)
+                .all()
         )
 
         if slas:
             sla_dates = [sla.execution_date for sla in slas]
             qry = (
                 session
-                .query(TI)
-                .filter(TI.state != State.SUCCESS)
-                .filter(TI.execution_date.in_(sla_dates))
-                .filter(TI.dag_id == dag.dag_id)
-                .all()
+                    .query(TI)
+                    .filter(TI.state != State.SUCCESS)
+                    .filter(TI.execution_date.in_(sla_dates))
+                    .filter(TI.dag_id == dag.dag_id)
+                    .all()
             )
             blocking_tis = []
             for ti in qry:
@@ -753,8 +753,8 @@ class SchedulerJob(BaseJob):
             # this query should be replaced by find dagrun
             qry = (
                 session.query(func.max(DagRun.execution_date))
-                .filter_by(dag_id=dag.dag_id)
-                .filter(or_(
+                    .filter_by(dag_id=dag.dag_id)
+                    .filter(or_(
                     DagRun.external_trigger == False,
                     # add % as a wildcard for the like query
                     DagRun.run_id.like(DagRun.ID_PREFIX + '%')
@@ -805,7 +805,7 @@ class SchedulerJob(BaseJob):
             # don't ever schedule prior to the dag's start_date
             if dag.start_date:
                 next_run_date = (dag.start_date if not next_run_date
-                                 else max(next_run_date, dag.start_date))
+                else max(next_run_date, dag.start_date))
                 if next_run_date == dag.start_date:
                     next_run_date = dag.normalize_schedule(dag.start_date)
 
@@ -937,9 +937,9 @@ class SchedulerJob(BaseJob):
                     .filter(models.TaskInstance.dag_id.in_(simple_dag_bag.dag_ids))
                     .filter(models.TaskInstance.state.in_(old_states))
                     .filter(and_(
-                        models.DagRun.dag_id == models.TaskInstance.dag_id,
-                        models.DagRun.execution_date == models.TaskInstance.execution_date,
-                        models.DagRun.state != State.RUNNING))
+                    models.DagRun.dag_id == models.TaskInstance.dag_id,
+                    models.DagRun.execution_date == models.TaskInstance.execution_date,
+                    models.DagRun.state != State.RUNNING))
                     .with_for_update()
                     .all()
             )
@@ -953,9 +953,9 @@ class SchedulerJob(BaseJob):
                     .filter(models.TaskInstance.dag_id.in_(simple_dag_bag.dag_ids))
                     .filter(models.TaskInstance.state.in_(old_states))
                     .filter(and_(
-                        models.DagRun.dag_id == models.TaskInstance.dag_id,
-                        models.DagRun.execution_date == models.TaskInstance.execution_date,
-                        models.DagRun.state != State.RUNNING))
+                    models.DagRun.dag_id == models.TaskInstance.dag_id,
+                    models.DagRun.execution_date == models.TaskInstance.execution_date,
+                    models.DagRun.state != State.RUNNING))
                     .update({models.TaskInstance.state: new_state},
                             synchronize_session=False)
             )
@@ -989,10 +989,10 @@ class SchedulerJob(BaseJob):
         TI = models.TaskInstance
         task_instances_to_examine = (
             session
-            .query(TI)
-            .filter(TI.dag_id.in_(simple_dag_bag.dag_ids))
-            .filter(TI.state.in_(states))
-            .all()
+                .query(TI)
+                .filter(TI.dag_id.in_(simple_dag_bag.dag_ids))
+                .filter(TI.state.in_(states))
+                .all()
         )
 
         # Put one task instance on each line
@@ -1117,8 +1117,8 @@ class SchedulerJob(BaseJob):
                     task_instance.key, State.QUEUED))
                 task_instance.state = State.QUEUED
                 task_instance.queued_dttm = (datetime.now()
-                                             if not task_instance.queued_dttm
-                                             else task_instance.queued_dttm)
+                if not task_instance.queued_dttm
+                else task_instance.queued_dttm)
                 session.merge(task_instance)
                 session.commit()
 
@@ -1228,7 +1228,7 @@ class SchedulerJob(BaseJob):
             processor_pid = processor_manager.get_pid(file_path)
             processor_start_time = processor_manager.get_start_time(file_path)
             runtime = ((datetime.now() - processor_start_time).total_seconds()
-                       if processor_start_time else None)
+            if processor_start_time else None)
             last_run = processor_manager.get_last_finish_time(file_path)
 
             rows.append((file_path,
@@ -1796,7 +1796,7 @@ class BackfillJob(BaseJob):
         # next run date for a subdag isn't relevant (schedule_interval for subdags
         # is ignored) so we use the dag run's start date in the case of a subdag
         next_run_date = (self.dag.normalize_schedule(dr_start_date)
-                         if not self.dag.is_subdag else dr_start_date)
+        if not self.dag.is_subdag else dr_start_date)
 
         active_dag_runs = []
         while next_run_date and next_run_date <= end_date:
@@ -1866,8 +1866,8 @@ class BackfillJob(BaseJob):
                     ti.task = task
 
                     ignore_depends_on_past = (
-                        self.ignore_first_depends_on_past and
-                        ti.execution_date == (start_date or ti.start_date))
+                            self.ignore_first_depends_on_past and
+                            ti.execution_date == (start_date or ti.start_date))
                     self.logger.debug("Task instance to run {} state {}"
                                       .format(ti, ti.state))
 
@@ -2066,7 +2066,6 @@ class BackfillJob(BaseJob):
 
 
 class LocalTaskJob(BaseJob):
-
     __mapper_args__ = {
         'polymorphic_identity': 'LocalTaskJob'
     }
@@ -2109,6 +2108,7 @@ class LocalTaskJob(BaseJob):
             logging.error("Killing subprocess")
             self.on_kill()
             raise AirflowException("LocalTaskJob received SIGTERM signal")
+
         signal.signal(signal.SIGTERM, signal_handler)
 
         try:

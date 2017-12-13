@@ -101,6 +101,7 @@ class BranchPythonOperator(PythonOperator, SkipMixin):
     ``skipped`` states propagates where all directly upstream tasks are
     ``skipped``.
     """
+
     def execute(self, context):
         branch = super(BranchPythonOperator, self).execute(context)
         logging.info("Following branch {}".format(branch))
@@ -128,6 +129,7 @@ class ShortCircuitOperator(PythonOperator, SkipMixin):
 
     The condition is determined by the result of `python_callable`.
     """
+
     def execute(self, context):
         condition = super(ShortCircuitOperator, self).execute(context)
         logging.info("Condition result is {}".format(condition))

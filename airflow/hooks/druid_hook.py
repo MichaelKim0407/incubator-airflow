@@ -165,7 +165,7 @@ class DruidHook(BaseHook):
         return d["task"]
 
     def load_from_hdfs(
-            self, datasource, static_path,  ts_dim, columns,
+            self, datasource, static_path, ts_dim, columns,
             intervals, num_shards, target_partition_size, query_granularity, segment_granularity,
             metric_spec=None, hadoop_dependency_coordinates=None):
         """

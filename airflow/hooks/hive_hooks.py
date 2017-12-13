@@ -38,7 +38,6 @@ HIVE_QUEUE_PRIORITIES = ['VERY_HIGH', 'HIGH', 'NORMAL', 'LOW', 'VERY_LOW']
 
 
 class HiveCliHook(BaseHook):
-
     """Simple wrapper around the hive CLI.
 
     It also supports the ``beeline``
@@ -150,8 +149,8 @@ class HiveCliHook(BaseHook):
             itertools.izip(
                 ["-hiveconf"] * len(d),
                 ["{}={}".format(k, v) for k, v in d.items()]
-                )
             )
+        )
 
     def run_cli(self, hql, schema=None, verbose=True, hive_conf=None):
         """
@@ -186,19 +185,19 @@ class HiveCliHook(BaseHook):
                     hive_conf_params.extend(
                         ['-hiveconf',
                          'mapreduce.job.queuename={}'
-                         .format(self.mapred_queue)])
+                             .format(self.mapred_queue)])
 
                 if self.mapred_queue_priority:
                     hive_conf_params.extend(
                         ['-hiveconf',
                          'mapreduce.job.priority={}'
-                         .format(self.mapred_queue_priority)])
+                             .format(self.mapred_queue_priority)])
 
                 if self.mapred_job_name:
                     hive_conf_params.extend(
                         ['-hiveconf',
                          'mapred.job.name={}'
-                         .format(self.mapred_job_name)])
+                             .format(self.mapred_job_name)])
 
                 hive_cmd.extend(hive_conf_params)
                 hive_cmd.extend(['-f', f.name])
@@ -262,8 +261,8 @@ class HiveCliHook(BaseHook):
                     error_loc = re.search('(\d+):(\d+)', message)
                     if error_loc and error_loc.group(1).isdigit():
                         l = int(error_loc.group(1))
-                        begin = max(l-2, 0)
-                        end = min(l+3, len(query.split('\n')))
+                        begin = max(l - 2, 0)
+                        end = min(l + 3, len(query.split('\n')))
                         context = '\n'.join(query.split('\n')[begin:end])
                         logging.info("Context :\n {0}".format(context))
                 else:
@@ -305,14 +304,14 @@ class HiveCliHook(BaseHook):
         def _infer_field_types_from_df(df):
             DTYPE_KIND_HIVE_TYPE = {
                 'b': 'BOOLEAN',  # boolean
-                'i': 'BIGINT',   # signed integer
-                'u': 'BIGINT',   # unsigned integer
-                'f': 'DOUBLE',   # floating-point
-                'c': 'STRING',   # complex floating-point
-                'O': 'STRING',   # object
-                'S': 'STRING',   # (byte-)string
-                'U': 'STRING',   # Unicode
-                'V': 'STRING'    # void
+                'i': 'BIGINT',  # signed integer
+                'u': 'BIGINT',  # unsigned integer
+                'f': 'DOUBLE',  # floating-point
+                'c': 'STRING',  # complex floating-point
+                'O': 'STRING',  # object
+                'S': 'STRING',  # (byte-)string
+                'U': 'STRING',  # Unicode
+                'V': 'STRING'  # void
             }
 
             return dict((col, DTYPE_KIND_HIVE_TYPE[dtype.kind]) for col, dtype in df.dtypes.iteritems())
@@ -322,7 +321,6 @@ class HiveCliHook(BaseHook):
 
         with TemporaryDirectory(prefix='airflow_hiveop_') as tmp_dir:
             with NamedTemporaryFile(dir=tmp_dir) as f:
-
                 if field_dict is None and (create or recreate):
                     field_dict = _infer_field_types_from_df(df)
 
@@ -409,7 +407,6 @@ class HiveCliHook(BaseHook):
 
 
 class HiveMetastoreHook(BaseHook):
-
     """ Wrapper to interact with the Hive Metastore"""
 
     def __init__(self, metastore_conn_id='metastore_default'):
@@ -637,6 +634,7 @@ class HiveServer2Hook(BaseHook):
     Note that the default authMechanism is PLAIN, to override it you
     can specify it in the ``extra`` of your connection in the UI as in
     """
+
     def __init__(self, hiveserver2_conn_id='hiveserver2_default'):
         self.hiveserver2_conn_id = hiveserver2_conn_id
 

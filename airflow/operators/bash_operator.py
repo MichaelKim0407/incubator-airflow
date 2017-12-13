@@ -105,4 +105,3 @@ class BashOperator(BaseOperator):
     def on_kill(self):
         logging.info('Sending SIGTERM signal to bash process group')
         os.killpg(os.getpgid(self.sp.pid), signal.SIGTERM)
-

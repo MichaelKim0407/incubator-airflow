@@ -58,8 +58,9 @@ class DefaultUser(object):
         '''Access all the things'''
         return True
 
-#models.User = User  # hack!
-#del User
+
+# models.User = User  # hack!
+# del User
 
 
 @login_manager.user_loader

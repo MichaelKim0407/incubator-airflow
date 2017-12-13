@@ -25,7 +25,6 @@ except ImportError:
     except ImportError:
         mock = None
 
-
 TASK_ID = 'test-python-dataflow'
 PY_FILE = 'apache_beam.examples.wordcount'
 PY_OPTIONS = ['-m']

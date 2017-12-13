@@ -32,24 +32,24 @@ class GoogleCloudStorageToBigQueryOperator(BaseOperator):
 
     @apply_defaults
     def __init__(
-        self,
-        bucket,
-        source_objects,
-        destination_project_dataset_table,
-        schema_fields=None,
-        schema_object=None,
-        source_format='CSV',
-        create_disposition='CREATE_IF_NEEDED',
-        skip_leading_rows=0,
-        write_disposition='WRITE_EMPTY',
-        field_delimiter=',',
-        max_id_key=None,
-        bigquery_conn_id='bigquery_default',
-        google_cloud_storage_conn_id='google_cloud_storage_default',
-        delegate_to=None,
-        schema_update_options=(),
-        *args,
-        **kwargs):
+            self,
+            bucket,
+            source_objects,
+            destination_project_dataset_table,
+            schema_fields=None,
+            schema_object=None,
+            source_format='CSV',
+            create_disposition='CREATE_IF_NEEDED',
+            skip_leading_rows=0,
+            write_disposition='WRITE_EMPTY',
+            field_delimiter=',',
+            max_id_key=None,
+            bigquery_conn_id='bigquery_default',
+            google_cloud_storage_conn_id='google_cloud_storage_default',
+            delegate_to=None,
+            schema_update_options=(),
+            *args,
+            **kwargs):
         """
         The schema to be used for the BigQuery table may be specified in one of
         two ways. You may either directly pass the schema fields in, or you may

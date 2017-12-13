@@ -45,6 +45,7 @@ from tests.executors.test_executor import TestExecutor
 from tests.core import TEST_DAG_FOLDER
 
 from airflow import configuration
+
 configuration.load_test_config()
 
 import sqlalchemy
@@ -121,7 +122,7 @@ class BackfillJobTest(unittest.TestCase):
 
         session = settings.Session()
         drs = session.query(DagRun).filter(
-            DagRun.dag_id=='example_bash_operator'
+            DagRun.dag_id == 'example_bash_operator'
         ).order_by(DagRun.execution_date).all()
 
         self.assertTrue(drs[0].execution_date == DEFAULT_DATE)
@@ -477,8 +478,8 @@ class BackfillJobTest(unittest.TestCase):
         ti.set_state(State.SUCCESS, session)
         started[ti.key] = ti
         job._update_counters(started=started, succeeded=succeeded,
-                                     skipped=skipped, failed=failed,
-                                     tasks_to_run=tasks_to_run)
+                             skipped=skipped, failed=failed,
+                             tasks_to_run=tasks_to_run)
         self.assertTrue(len(started) == 0)
         self.assertTrue(len(succeeded) == 1)
         self.assertTrue(len(skipped) == 0)
@@ -491,8 +492,8 @@ class BackfillJobTest(unittest.TestCase):
         ti.set_state(State.SKIPPED, session)
         started[ti.key] = ti
         job._update_counters(started=started, succeeded=succeeded,
-                                     skipped=skipped, failed=failed,
-                                     tasks_to_run=tasks_to_run)
+                             skipped=skipped, failed=failed,
+                             tasks_to_run=tasks_to_run)
         self.assertTrue(len(started) == 0)
         self.assertTrue(len(succeeded) == 0)
         self.assertTrue(len(skipped) == 1)
@@ -505,8 +506,8 @@ class BackfillJobTest(unittest.TestCase):
         ti.set_state(State.FAILED, session)
         started[ti.key] = ti
         job._update_counters(started=started, succeeded=succeeded,
-                                     skipped=skipped, failed=failed,
-                                     tasks_to_run=tasks_to_run)
+                             skipped=skipped, failed=failed,
+                             tasks_to_run=tasks_to_run)
         self.assertTrue(len(started) == 0)
         self.assertTrue(len(succeeded) == 0)
         self.assertTrue(len(skipped) == 0)
@@ -520,8 +521,8 @@ class BackfillJobTest(unittest.TestCase):
         ti.set_state(State.NONE, session)
         started[ti.key] = ti
         job._update_counters(started=started, succeeded=succeeded,
-                                     skipped=skipped, failed=failed,
-                                     tasks_to_run=tasks_to_run)
+                             skipped=skipped, failed=failed,
+                             tasks_to_run=tasks_to_run)
         self.assertTrue(len(started) == 0)
         self.assertTrue(len(succeeded) == 0)
         self.assertTrue(len(skipped) == 0)
@@ -665,7 +666,7 @@ class SchedulerJobTest(unittest.TestCase):
 
         self.assertEqual(State.RUNNING, dr1.state)
         self.assertEqual(2, DAG.get_num_task_instances(dag_id, dag.task_ids,
-            states=[State.RUNNING], session=session))
+                                                       states=[State.RUNNING], session=session))
 
         # create second dag run
         dr2 = scheduler.create_dag_run(dag)
@@ -690,7 +691,7 @@ class SchedulerJobTest(unittest.TestCase):
         ti3.refresh_from_db()
         ti4.refresh_from_db()
         self.assertEqual(3, DAG.get_num_task_instances(dag_id, dag.task_ids,
-            states=[State.RUNNING, State.QUEUED], session=session))
+                                                       states=[State.RUNNING, State.QUEUED], session=session))
         self.assertEqual(State.RUNNING, ti1.state)
         self.assertEqual(State.RUNNING, ti2.state)
         six.assertCountEqual(self, [State.QUEUED, State.SCHEDULED], [ti3.state, ti4.state])
@@ -1586,8 +1587,8 @@ class SchedulerJobTest(unittest.TestCase):
         scheduler.run()
 
         session = settings.Session()
-        ti = session.query(TI).filter(TI.dag_id==dag.dag_id,
-                                      TI.task_id==dag_task1.task_id).first()
+        ti = session.query(TI).filter(TI.dag_id == dag.dag_id,
+                                      TI.task_id == dag_task1.task_id).first()
 
         # make sure the counter has increased
         self.assertEqual(ti.try_number, 2)
@@ -1635,7 +1636,7 @@ class SchedulerJobTest(unittest.TestCase):
             dag.clear()
 
         scheduler = SchedulerJob(dag_ids=dag_ids,
-                                 subdir= dag_directory,
+                                 subdir=dag_directory,
                                  num_runs=1,
                                  **self.default_scheduler_args)
         scheduler.run()
@@ -1719,10 +1720,10 @@ class SchedulerJobTest(unittest.TestCase):
 
         }
         dag1 = DAG(DAG_NAME1,
-                  schedule_interval='* * * * *',
-                  max_active_runs=1,
-                  default_args=default_args
-                  )
+                   schedule_interval='* * * * *',
+                   max_active_runs=1,
+                   default_args=default_args
+                   )
 
         default_catchup = configuration.getboolean('scheduler', 'catchup_by_default')
         # Test configs have catchup by default ON
@@ -1733,11 +1734,11 @@ class SchedulerJobTest(unittest.TestCase):
         self.assertEqual(dag1.catchup, True)
 
         dag2 = DAG(DAG_NAME2,
-                  schedule_interval='* * * * *',
-                  max_active_runs=1,
-                  catchup=False,
-                  default_args=default_args
-                  )
+                   schedule_interval='* * * * *',
+                   max_active_runs=1,
+                   catchup=False,
+                   default_args=default_args
+                   )
 
         run_this_1 = DummyOperator(task_id='run_this_1', dag=dag2)
         run_this_2 = DummyOperator(task_id='run_this_2', dag=dag2)

@@ -16,7 +16,6 @@
 
 import sys
 
-
 # ------------------------------------------------------------------------
 #
 # #TODO #FIXME Airflow 2.0
@@ -57,8 +56,10 @@ _hooks = {
 }
 
 import os as _os
+
 if not _os.environ.get('AIRFLOW_USE_NEW_IMPORTS', False):
     from airflow.utils.helpers import AirflowImporter
+
     airflow_importer = AirflowImporter(sys.modules[__name__], _hooks)
 
 
@@ -84,4 +85,3 @@ def _integrate_plugins():
                     "import from 'airflow.hooks.[plugin_module]' "
                     "instead. Support for direct imports will be dropped "
                     "entirely in Airflow 2.0.".format(i=hook_name))
-

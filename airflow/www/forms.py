@@ -41,4 +41,3 @@ class DateTimeWithNumRunsForm(Form):
         (100, "100"),
         (365, "365"),
     ))
-

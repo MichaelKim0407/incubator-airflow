@@ -230,6 +230,7 @@ class GHEAuthBackend(object):
 
         return redirect(next_url)
 
+
 login_manager = GHEAuthBackend()
 
 

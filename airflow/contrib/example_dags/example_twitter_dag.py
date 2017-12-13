@@ -29,6 +29,7 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.hive_operator import HiveOperator
 from datetime import date, timedelta
 
+
 # --------------------------------------------------------------------------------
 # Create a few placeholder scripts. In practice these would be different python
 # script files, which are imported in this section with absolute or relative imports
@@ -140,7 +141,6 @@ local_dir = "/tmp/"
 hdfs_dir = " /tmp/"
 
 for channel in to_channels:
-
     file_name = "to_" + channel + "_" + yesterday.strftime("%Y-%m-%d") + ".csv"
 
     load_to_hdfs = BashOperator(
@@ -156,8 +156,8 @@ for channel in to_channels:
         task_id="load_" + channel + "_to_hive",
         hql="LOAD DATA INPATH '" +
             hdfs_dir + channel + "/" + file_name + "' "
-            "INTO TABLE " + channel + " "
-            "PARTITION(dt='" + dt + "')",
+                                                   "INTO TABLE " + channel + " "
+                                                                             "PARTITION(dt='" + dt + "')",
         dag=dag)
     load_to_hive.set_upstream(load_to_hdfs)
     load_to_hive.set_downstream(hive_to_mysql)
@@ -177,8 +177,8 @@ for channel in from_channels:
         task_id="load_" + channel + "_to_hive",
         hql="LOAD DATA INPATH '" +
             hdfs_dir + channel + "/" + file_name + "' "
-            "INTO TABLE " + channel + " "
-            "PARTITION(dt='" + dt + "')",
+                                                   "INTO TABLE " + channel + " "
+                                                                             "PARTITION(dt='" + dt + "')",
         dag=dag)
 
     load_to_hive.set_upstream(load_to_hdfs)

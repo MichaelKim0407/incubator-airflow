@@ -19,6 +19,7 @@ import unittest
 from airflow import configuration
 from airflow.configuration import conf
 
+
 class ConfTest(unittest.TestCase):
 
     def setup(self):

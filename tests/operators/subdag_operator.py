@@ -31,6 +31,7 @@ default_args = dict(
     start_date=DEFAULT_DATE,
 )
 
+
 class SubDagOperatorTests(unittest.TestCase):
 
     def test_subdag_name(self):

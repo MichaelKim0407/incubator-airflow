@@ -20,7 +20,6 @@ from airflow.executors import DEFAULT_EXECUTOR
 
 
 class SubDagOperator(BaseOperator):
-
     template_fields = tuple()
     ui_color = '#555'
     ui_fgcolor = '#fff'
@@ -60,10 +59,10 @@ class SubDagOperator(BaseOperator):
         if self.pool:
             pool = (
                 session
-                .query(Pool)
-                .filter(Pool.slots == 1)
-                .filter(Pool.pool == self.pool)
-                .first()
+                    .query(Pool)
+                    .filter(Pool.slots == 1)
+                    .filter(Pool.pool == self.pool)
+                    .first()
             )
             conflicts = [t for t in subdag.tasks if t.pool == self.pool]
             if pool and any(t.pool == self.pool for t in subdag.tasks):

@@ -104,10 +104,12 @@ class TestBigQueryTableSplitter(unittest.TestCase):
         self.assertIn('Format exception for var_x:',
                       str(context.exception), "")
 
+
 class TestBigQueryHookSourceFormat(unittest.TestCase):
     def test_invalid_source_format(self):
         with self.assertRaises(Exception) as context:
-            hook.BigQueryBaseCursor("test", "test").run_load("test.test", "test_schema.json", ["test_data.json"], source_format="json")
+            hook.BigQueryBaseCursor("test", "test").run_load("test.test", "test_schema.json", ["test_data.json"],
+                                                             source_format="json")
 
         # since we passed 'json' in, and it's not valid, make sure it's present in the error string.
         self.assertIn("json", str(context.exception))
@@ -121,7 +123,7 @@ class TestBigQueryBaseCursor(unittest.TestCase):
                 "test_schema.json",
                 ["test_data.json"],
                 schema_update_options=["THIS IS NOT VALID"]
-                )
+            )
         self.assertIn("THIS IS NOT VALID", str(context.exception))
 
     def test_invalid_schema_update_and_write_disposition(self):
@@ -134,6 +136,7 @@ class TestBigQueryBaseCursor(unittest.TestCase):
                 write_disposition='WRITE_EMPTY'
             )
         self.assertIn("schema_update_options is only", str(context.exception))
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -307,6 +307,7 @@ class DagFileProcessorManager(LoggingMixin):
     :type _last_runtime: dict[unicode, float]
     :type _last_finish_time: dict[unicode, datetime]
     """
+
     def __init__(self,
                  dag_directory,
                  file_paths,
@@ -389,7 +390,7 @@ class DagFileProcessorManager(LoggingMixin):
         being processed
         """
         if file_path in self._processors:
-            return (datetime.now() - self._processors[file_path].start_time)\
+            return (datetime.now() - self._processors[file_path].start_time) \
                 .total_seconds()
         return None
 
@@ -477,7 +478,7 @@ class DagFileProcessorManager(LoggingMixin):
         """
         now = datetime.now()
         return os.path.join(self._child_process_log_directory,
-            now.strftime("%Y-%m-%d"))
+                            now.strftime("%Y-%m-%d"))
 
     def _get_log_file_path(self, dag_file_path):
         """
@@ -513,14 +514,14 @@ class DagFileProcessorManager(LoggingMixin):
         if (os.path.isdir(log_directory)):
             # if symlink exists but is stale, update it
             if (os.path.islink(latest_log_directory_path)):
-                if(os.readlink(latest_log_directory_path) != log_directory):
+                if (os.readlink(latest_log_directory_path) != log_directory):
                     os.unlink(latest_log_directory_path)
                     os.symlink(log_directory, latest_log_directory_path)
             elif (os.path.isdir(latest_log_directory_path) or
-                    os.path.isfile(latest_log_directory_path)):
+                  os.path.isfile(latest_log_directory_path)):
                 self.logger.warn("{} already exists as a dir/file. "
-                                "Skip creating symlink."
-                                    .format(latest_log_directory_path))
+                                 "Skip creating symlink."
+                                 .format(latest_log_directory_path))
             else:
                 os.symlink(log_directory, latest_log_directory_path)
 
@@ -591,7 +592,7 @@ class DagFileProcessorManager(LoggingMixin):
             for file_path in self._file_paths:
                 last_finish_time = self.get_last_finish_time(file_path)
                 if (last_finish_time is not None and
-                    (now - last_finish_time).total_seconds() <
+                        (now - last_finish_time).total_seconds() <
                         self._process_file_interval):
                     file_paths_recently_processed.append(file_path)
 

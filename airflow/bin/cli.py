@@ -58,7 +58,6 @@ from airflow.www.app import cached_app
 from sqlalchemy import func
 from sqlalchemy.orm import exc
 
-
 api.load_auth()
 api_module = import_module(conf.get('cli', 'api_client'))
 api_client = api_module.Client(api_base_url=conf.get('cli', 'endpoint_url'),
@@ -191,8 +190,8 @@ def pool(args):
         name = args.get or args.delete or args.set[0]
     pool = (
         session.query(Pool)
-        .filter(Pool.pool == name)
-        .first())
+            .filter(Pool.pool == name)
+            .first())
     if pool and args.get:
         print("{} ".format(pool))
         return
@@ -219,7 +218,6 @@ def pool(args):
 
 
 def variables(args):
-
     if args.get:
         try:
             var = Variable.get(args.get,
@@ -327,7 +325,7 @@ def run(args, dag=None):
     # Load custom airflow config
     if args.cfg_path:
         with open(args.cfg_path, 'r') as conf_file:
-           conf_dict = json.load(conf_file)
+            conf_dict = json.load(conf_file)
 
         if os.path.exists(args.cfg_path):
             os.remove(args.cfg_path)
@@ -432,8 +430,8 @@ def run(args, dag=None):
                 session.commit()
                 pickle_id = pickle.id
                 print((
-                    'Pickled dag {dag} '
-                    'as pickle_id:{pickle_id}').format(**locals()))
+                          'Pickled dag {dag} '
+                          'as pickle_id:{pickle_id}').format(**locals()))
             except Exception as e:
                 print('Could not pickle the DAG')
                 print(e)
@@ -677,10 +675,10 @@ def restart_workers(gunicorn_master_proc, num_workers_expected):
             gunicorn_master_proc.send_signal(signal.SIGTTIN)
             excess += 1
             wait_until_true(lambda: num_workers_expected + excess ==
-                            get_num_workers_running(gunicorn_master_proc))
+                                    get_num_workers_running(gunicorn_master_proc))
 
     wait_until_true(lambda: num_workers_expected ==
-                    get_num_workers_running(gunicorn_master_proc))
+                            get_num_workers_running(gunicorn_master_proc))
 
     while True:
         num_workers_running = get_num_workers_running(gunicorn_master_proc)
@@ -703,7 +701,7 @@ def restart_workers(gunicorn_master_proc, num_workers_expected):
                 gunicorn_master_proc.send_signal(signal.SIGTTOU)
                 excess -= 1
                 wait_until_true(lambda: num_workers_expected + excess ==
-                                get_num_workers_running(gunicorn_master_proc))
+                                        get_num_workers_running(gunicorn_master_proc))
 
         # Start a new worker by asking gunicorn to increase number of workers
         elif num_workers_running == num_workers_expected:
@@ -723,7 +721,7 @@ def restart_workers(gunicorn_master_proc, num_workers_expected):
             ), state)
             time.sleep(10)
             if len(
-                psutil.Process(gunicorn_master_proc.pid).children()
+                    psutil.Process(gunicorn_master_proc.pid).children()
             ) < num_workers_expected:
                 start_refresh(gunicorn_master_proc)
 
@@ -895,6 +893,7 @@ def serve_logs(args):
             filename,
             mimetype="application/json",
             as_attachment=False)
+
     WORKER_LOG_SERVER_PORT = \
         int(conf.get('celery', 'WORKER_LOG_SERVER_PORT'))
     flask_app.run(
@@ -974,7 +973,7 @@ def upgradedb(args):  # noqa
     if not ds_rows:
         qry = (
             session.query(DagRun.dag_id, DagRun.state, func.count('*'))
-            .group_by(DagRun.dag_id, DagRun.state)
+                .group_by(DagRun.dag_id, DagRun.state)
         )
         for dag_id, state, count in qry:
             session.add(DagStat(dag_id=dag_id, state=state, count=count))
@@ -1032,9 +1031,9 @@ def connections(args):
         session = settings.Session()
         try:
             to_delete = (session
-                         .query(Connection)
-                         .filter(Connection.conn_id == args.conn_id)
-                         .one())
+                .query(Connection)
+                .filter(Connection.conn_id == args.conn_id)
+                .one())
         except exc.NoResultFound:
             msg = '\n\tDid not find a connection with `conn_id`={conn_id}\n'
             msg = msg.format(conn_id=args.conn_id)
@@ -1176,16 +1175,16 @@ class CLIFactory(object):
         'dry_run': Arg(
             ("-dr", "--dry_run"), "Perform a dry run", "store_true"),
         'pid': Arg(
-            ("--pid", ), "PID file location",
+            ("--pid",), "PID file location",
             nargs='?'),
         'daemon': Arg(
             ("-D", "--daemon"), "Daemonize instead of running "
                                 "in the foreground",
             "store_true"),
         'stderr': Arg(
-            ("--stderr", ), "Redirect stderr to this file"),
+            ("--stderr",), "Redirect stderr to this file"),
         'stdout': Arg(
-            ("--stdout", ), "Redirect stdout to this file"),
+            ("--stdout",), "Redirect stdout to this file"),
         'log_file': Arg(
             ("-l", "--log-file"), "Location of the log file"),
 
@@ -1341,7 +1340,7 @@ class CLIFactory(object):
             "Serialized pickle object of the entire dag (used internally)"),
         'job_id': Arg(("-j", "--job_id"), argparse.SUPPRESS),
         'cfg_path': Arg(
-            ("--cfg_path", ), "Path to config file to use instead of airflow.cfg"),
+            ("--cfg_path",), "Path to config file to use instead of airflow.cfg"),
         # webserver
         'port': Arg(
             ("-p", "--port"),
@@ -1349,11 +1348,11 @@ class CLIFactory(object):
             type=int,
             help="The port on which to run the server"),
         'ssl_cert': Arg(
-            ("--ssl_cert", ),
+            ("--ssl_cert",),
             default=conf.get('webserver', 'WEB_SERVER_SSL_CERT'),
             help="Path to the SSL certificate for the webserver"),
         'ssl_key': Arg(
-            ("--ssl_key", ),
+            ("--ssl_key",),
             default=conf.get('webserver', 'WEB_SERVER_SSL_KEY'),
             help="Path to the key to use with the SSL certificate"),
         'workers': Arg(

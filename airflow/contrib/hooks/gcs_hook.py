@@ -129,9 +129,9 @@ class GoogleCloudStorageHook(GoogleCloudBaseHook):
         service = self.get_conn()
         try:
             response = (service
-                        .objects()
-                        .get(bucket=bucket, object=object)
-                        .execute())
+                .objects()
+                .get(bucket=bucket, object=object)
+                .execute())
 
             if 'updated' in response:
                 import dateutil.parser

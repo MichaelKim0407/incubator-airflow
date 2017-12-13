@@ -54,13 +54,13 @@ class MetastoreBrowserView(BaseView, wwwutils.DataProfilingMixin):
         h = MySqlHook(METASTORE_MYSQL_CONN_ID)
         df = h.get_pandas_df(sql)
         df.db = (
-            '<a href="/admin/metastorebrowserview/db/?db=' +
-            df.db + '">' + df.db + '</a>')
+                '<a href="/admin/metastorebrowserview/db/?db=' +
+                df.db + '">' + df.db + '</a>')
         table = df.to_html(
             classes="table table-striped table-bordered table-hover",
             index=False,
             escape=False,
-            na_rep='',)
+            na_rep='', )
         return self.render(
             "metastore_browser/dbs.html", table=table)
 
@@ -107,7 +107,7 @@ class MetastoreBrowserView(BaseView, wwwutils.DataProfilingMixin):
         return df.to_html(
             classes="table table-striped table-bordered table-hover",
             index=False,
-            na_rep='',)
+            na_rep='', )
 
     @wwwutils.gzipped
     @expose('/objects/')
@@ -133,7 +133,7 @@ class MetastoreBrowserView(BaseView, wwwutils.DataProfilingMixin):
         """.format(where_clause=where_clause, LIMIT=TABLE_SELECTOR_LIMIT)
         h = MySqlHook(METASTORE_MYSQL_CONN_ID)
         d = [
-                {'id': row[0], 'text': row[0]}
+            {'id': row[0], 'text': row[0]}
             for row in h.get_records(sql)]
         return json.dumps(d)
 
@@ -147,7 +147,7 @@ class MetastoreBrowserView(BaseView, wwwutils.DataProfilingMixin):
         return df.to_html(
             classes="table table-striped table-bordered table-hover",
             index=False,
-            na_rep='',)
+            na_rep='', )
 
     @expose('/ddl/')
     def ddl(self):
@@ -155,6 +155,7 @@ class MetastoreBrowserView(BaseView, wwwutils.DataProfilingMixin):
         sql = "SHOW CREATE TABLE {table};".format(table=table)
         h = HiveCliHook(HIVE_CLI_CONN_ID)
         return h.run_cli(sql)
+
 
 v = MetastoreBrowserView(category="Plugins", name="Hive Metadata Browser")
 

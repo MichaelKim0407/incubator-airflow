@@ -114,7 +114,7 @@ class GoogleAuthBackend(object):
 
     def get_google_user_profile_info(self, google_token):
         resp = self.google_oauth.get('https://www.googleapis.com/oauth2/v1/userinfo',
-                                    token=(google_token, ''))
+                                     token=(google_token, ''))
 
         if not resp or resp.status != 200:
             raise AuthenticationError(
@@ -184,9 +184,9 @@ class GoogleAuthBackend(object):
 
         return redirect(next_url)
 
+
 login_manager = GoogleAuthBackend()
 
 
 def login(self, request):
     return login_manager.login(request)
-

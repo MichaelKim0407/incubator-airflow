@@ -46,10 +46,12 @@ class DummyStatsLogger(object):
     def timing(cls, stat, dt):
         pass
 
+
 Stats = DummyStatsLogger
 
 if conf.getboolean('scheduler', 'statsd_on'):
     from statsd import StatsClient
+
     statsd = StatsClient(
         host=conf.get('scheduler', 'statsd_host'),
         port=conf.getint('scheduler', 'statsd_port'),
@@ -57,7 +59,6 @@ if conf.getboolean('scheduler', 'statsd_on'):
     Stats = statsd
 else:
     Stats = DummyStatsLogger
-
 
 HEADER = """\
   ____________       _____________
@@ -148,8 +149,10 @@ def configure_orm(disable_connection_pool=False):
     Session = scoped_session(
         sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
+
 try:
     from airflow_local_settings import *
+
     logging.info("Loaded airflow_local_settings.")
 except:
     pass

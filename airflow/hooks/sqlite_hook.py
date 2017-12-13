@@ -18,7 +18,6 @@ from airflow.hooks.dbapi_hook import DbApiHook
 
 
 class SqliteHook(DbApiHook):
-
     """
     Interact with SQLite.
     """

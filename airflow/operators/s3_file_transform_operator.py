@@ -79,7 +79,7 @@ class S3FileTransformOperator(BaseOperator):
                      "".format(self.source_s3_key))
         if not source_s3.check_for_key(self.source_s3_key):
             raise AirflowException("The source key {0} does not exist"
-                            "".format(self.source_s3_key))
+                                   "".format(self.source_s3_key))
         source_s3_key_object = source_s3.get_key(self.source_s3_key)
         with NamedTemporaryFile("w") as f_source, NamedTemporaryFile("w") as f_dest:
             logging.info("Dumping S3 file {0} contents to local file {1}"
@@ -95,7 +95,7 @@ class S3FileTransformOperator(BaseOperator):
                          "" + transform_script_stdoutdata)
             if transform_script_process.returncode > 0:
                 raise AirflowException("Transform script failed "
-                                "" + transform_script_stderrdata)
+                                       "" + transform_script_stderrdata)
             else:
                 logging.info("Transform script successful."
                              "Output temporarily located at {0}"

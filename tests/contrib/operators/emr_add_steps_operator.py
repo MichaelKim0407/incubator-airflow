@@ -37,10 +37,8 @@ class TestEmrAddStepsOperator(unittest.TestCase):
         # Mock out the emr_client creator
         self.boto3_client_mock = MagicMock(return_value=mock_emr_client)
 
-
     def test_execute_adds_steps_to_the_job_flow_and_returns_step_ids(self):
         with patch('boto3.client', self.boto3_client_mock):
-
             operator = EmrAddStepsOperator(
                 task_id='test_task',
                 job_flow_id='j-8989898989',
@@ -48,6 +46,7 @@ class TestEmrAddStepsOperator(unittest.TestCase):
             )
 
             self.assertEqual(operator.execute(None), ['s-2LH3R5GW3A53T'])
+
 
 if __name__ == '__main__':
     unittest.main()

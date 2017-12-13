@@ -32,6 +32,7 @@ class HDFSHook(BaseHook):
     """
     Interact with HDFS. This class is a wrapper around the snakebite library.
     """
+
     def __init__(self, hdfs_conn_id='hdfs_default', proxy_user=None):
         if not snakebite_imported:
             raise ImportError(

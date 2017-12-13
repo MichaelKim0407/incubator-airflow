@@ -79,7 +79,7 @@ class GoogleCloudBaseHook(BaseHook):
             scopes = [s.strip() for s in scope.split(',')]
             if key_path.endswith('.json'):
                 logging.info('Getting connection using a JSON key file.')
-                credentials = ServiceAccountCredentials\
+                credentials = ServiceAccountCredentials \
                     .from_json_keyfile_name(key_path, scopes)
             elif key_path.endswith('.p12'):
                 raise AirflowException('Legacy P12 key file are not supported, '

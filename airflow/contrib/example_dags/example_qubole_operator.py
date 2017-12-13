@@ -19,8 +19,6 @@ from airflow.contrib.operators.qubole_operator import QuboleOperator
 import filecmp
 import random
 
-
-
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -34,18 +32,21 @@ default_args = {
 # some of the tasks may or may not work based on your QDS account setup
 dag = DAG('example_qubole_operator', default_args=default_args, schedule_interval='@daily')
 
+
 def compare_result(ds, **kwargs):
     ti = kwargs['ti']
     r1 = t1.get_results(ti)
     r2 = t2.get_results(ti)
     return filecmp.cmp(r1, r2)
 
+
 t1 = QuboleOperator(
     task_id='hive_show_table',
     command_type='hivecmd',
     query='show tables',
     cluster_label='default',
-    fetch_logs=True, # If true, will fetch qubole command logs and concatenate them into corresponding airflow task logs
+    fetch_logs=True,
+    # If true, will fetch qubole command logs and concatenate them into corresponding airflow task logs
     tags='aiflow_example_run',  # To attach tags to qubole command, auto attach 3 tags - dag_id, task_id, run_id
     qubole_conn_id='qubole_default',  # Connection id to submit commands inside QDS, if not set "qubole_default" is used
     dag=dag)

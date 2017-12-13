@@ -31,7 +31,7 @@ import sqlalchemy as sa
 
 
 def upgrade():
-    op.add_column('connection', sa.Column('is_extra_encrypted', sa.Boolean,default=False))
+    op.add_column('connection', sa.Column('is_extra_encrypted', sa.Boolean, default=False))
 
 
 def downgrade():

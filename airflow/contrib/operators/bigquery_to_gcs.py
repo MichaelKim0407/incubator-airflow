@@ -29,17 +29,17 @@ class BigQueryToCloudStorageOperator(BaseOperator):
 
     @apply_defaults
     def __init__(
-        self,
-        source_project_dataset_table,
-        destination_cloud_storage_uris,
-        compression='NONE',
-        export_format='CSV',
-        field_delimiter=',',
-        print_header=True,
-        bigquery_conn_id='bigquery_default',
-        delegate_to=None,
-        *args,
-        **kwargs):
+            self,
+            source_project_dataset_table,
+            destination_cloud_storage_uris,
+            compression='NONE',
+            export_format='CSV',
+            field_delimiter=',',
+            print_header=True,
+            bigquery_conn_id='bigquery_default',
+            delegate_to=None,
+            *args,
+            **kwargs):
         """
         Create a new BigQueryToCloudStorage to move data from BigQuery to
         Google Cloud Storage.  See here:

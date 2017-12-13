@@ -50,6 +50,7 @@ class SparkSqlHook(BaseHook):
     :param yarn_queue: The YARN queue to submit to (Default: "default")
     :type yarn_queue: str
     """
+
     def __init__(self,
                  sql,
                  conf=None,

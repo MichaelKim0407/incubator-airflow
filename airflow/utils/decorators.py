@@ -18,9 +18,11 @@ import os
 # a backport.
 try:
     import inspect
+
     signature = inspect.signature
 except AttributeError:
     import funcsigs
+
     signature = funcsigs.signature
 
 from copy import copy
@@ -39,6 +41,7 @@ def apply_defaults(func):
     inheritance and argument defaults, this decorator also alerts with
     specific information about the missing arguments.
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         if len(args) > 1:
@@ -71,8 +74,8 @@ def apply_defaults(func):
         non_optional_args = [
             name for (name, param) in sig.parameters.items()
             if param.default == param.empty and
-            param.name != 'self' and
-            param.kind not in (param.VAR_POSITIONAL, param.VAR_KEYWORD)]
+               param.name != 'self' and
+               param.kind not in (param.VAR_POSITIONAL, param.VAR_KEYWORD)]
         for arg in sig.parameters:
             if arg in default_args and arg not in kwargs:
                 kwargs[arg] = default_args[arg]
@@ -85,7 +88,9 @@ def apply_defaults(func):
 
         result = func(*args, **kwargs)
         return result
+
     return wrapper
+
 
 if 'BUILDING_AIRFLOW_DOCS' in os.environ:
     # Monkey patch hook to get good function headers while building docs

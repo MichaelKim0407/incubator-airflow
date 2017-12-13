@@ -54,7 +54,7 @@ class MySqlHook(DbApiHook):
 
         if conn.extra_dejson.get('charset', False):
             conn_config["charset"] = conn.extra_dejson["charset"]
-            if (conn_config["charset"]).lower() == 'utf8' or\
+            if (conn_config["charset"]).lower() == 'utf8' or \
                     (conn_config["charset"]).lower() == 'utf-8':
                 conn_config["use_unicode"] = True
         if conn.extra_dejson.get('cursor', False):
@@ -64,7 +64,7 @@ class MySqlHook(DbApiHook):
                 conn_config["cursorclass"] = MySQLdb.cursors.DictCursor
             elif (conn.extra_dejson["cursor"]).lower() == 'ssdictcursor':
                 conn_config["cursorclass"] = MySQLdb.cursors.SSDictCursor
-        local_infile = conn.extra_dejson.get('local_infile',False)
+        local_infile = conn.extra_dejson.get('local_infile', False)
         if conn.extra_dejson.get('ssl', False):
             conn_config['ssl'] = conn.extra_dejson['ssl']
         if local_infile:

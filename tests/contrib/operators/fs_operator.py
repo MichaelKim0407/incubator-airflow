@@ -33,7 +33,9 @@ def reset(dag_id=TEST_DAG_ID):
     session.commit()
     session.close()
 
+
 reset()
+
 
 class FileSensorTest(unittest.TestCase):
     def setUp(self):
@@ -45,7 +47,7 @@ class FileSensorTest(unittest.TestCase):
             'start_date': DEFAULT_DATE,
             'provide_context': True
         }
-        dag = DAG(TEST_DAG_ID+'test_schedule_dag_once', default_args=args)
+        dag = DAG(TEST_DAG_ID + 'test_schedule_dag_once', default_args=args)
         dag.schedule_interval = '@once'
         self.hook = hook
         self.dag = dag
@@ -59,6 +61,7 @@ class FileSensorTest(unittest.TestCase):
             dag=self.dag,
         )
         task.run(start_date=DEFAULT_DATE, end_date=DEFAULT_DATE, ignore_ti_state=True)
+
 
 if __name__ == '__main__':
     unittest.main()

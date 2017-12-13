@@ -28,6 +28,7 @@ class ValidStateDep(BaseTIDep):
     :type valid_states: set(str)
     :return: whether or not the task instance's state is valid
     """
+
     def __init__(self, valid_states):
         super(ValidStateDep, self).__init__()
 
@@ -56,4 +57,4 @@ class ValidStateDep(BaseTIDep):
         yield self._failing_status(
             reason="Task is in the '{0}' state which is not a valid state for "
                    "execution. The task must be cleared in order to be run.".format(
-                       ti.state))
+                ti.state))

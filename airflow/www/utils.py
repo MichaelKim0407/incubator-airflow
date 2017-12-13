@@ -13,6 +13,7 @@
 # limitations under the License.
 #
 from future import standard_library
+
 standard_library.install_aliases()
 from builtins import str
 from builtins import object
@@ -39,26 +40,26 @@ AUTHENTICATE = configuration.getboolean('webserver', 'AUTHENTICATE')
 class LoginMixin(object):
     def is_accessible(self):
         return (
-            not AUTHENTICATE or (
+                not AUTHENTICATE or (
                 not current_user.is_anonymous() and
                 current_user.is_authenticated()
-            )
+        )
         )
 
 
 class SuperUserMixin(object):
     def is_accessible(self):
         return (
-            not AUTHENTICATE or
-            (not current_user.is_anonymous() and current_user.is_superuser())
+                not AUTHENTICATE or
+                (not current_user.is_anonymous() and current_user.is_superuser())
         )
 
 
 class DataProfilingMixin(object):
     def is_accessible(self):
         return (
-            not AUTHENTICATE or
-            (not current_user.is_anonymous() and current_user.data_profiling())
+                not AUTHENTICATE or
+                (not current_user.is_anonymous() and current_user.data_profiling())
         )
 
 
@@ -98,6 +99,7 @@ def action_logging(f):
     '''
     Decorator to log user actions
     '''
+
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
         session = settings.Session()
@@ -131,6 +133,7 @@ def notify_owner(f):
     '''
     Decorator to notify owner of actions taken on their DAGs by others
     '''
+
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
         """
@@ -170,6 +173,7 @@ def notify_owner(f):
                     send_email(task.email, subject, content)
         """
         return f(*args, **kwargs)
+
     return wrapper
 
 
@@ -188,6 +192,7 @@ def gzipped(f):
     '''
     Decorator to make a view compressed
     '''
+
     @functools.wraps(f)
     def view_func(*args, **kwargs):
         @after_this_request
@@ -200,8 +205,8 @@ def gzipped(f):
             response.direct_passthrough = False
 
             if (response.status_code < 200 or
-                response.status_code >= 300 or
-                'Content-Encoding' in response.headers):
+                    response.status_code >= 300 or
+                    'Content-Encoding' in response.headers):
                 return response
             gzip_buffer = IO()
             gzip_file = gzip.GzipFile(mode='wb',
@@ -234,6 +239,7 @@ class AceEditorWidget(wtforms.widgets.TextArea):
     """
     Renders an ACE code editor.
     """
+
     def __call__(self, field, **kwargs):
         kwargs.setdefault('id', field.id)
         html = '''

@@ -72,7 +72,6 @@ DEFAULT_DATE_ISO = DEFAULT_DATE.isoformat()
 DEFAULT_DATE_DS = DEFAULT_DATE_ISO[:10]
 TEST_DAG_ID = 'unit_tests'
 
-
 try:
     import cPickle as pickle
 except ImportError:
@@ -106,7 +105,6 @@ class OperatorSubclass(BaseOperator):
 
 
 class CoreTest(unittest.TestCase):
-
     # These defaults make the test faster to run
     default_scheduler_args = {"file_process_interval": 0,
                               "processor_poll_interval": 0.5,
@@ -573,7 +571,7 @@ class CoreTest(unittest.TestCase):
         Test the availability of variables in templates
         """
         val = {
-            'success':False,
+            'success': False,
             'test_value': 'a test value'
         }
         Variable.set("a_variable", val['test_value'])
@@ -642,9 +640,11 @@ class CoreTest(unittest.TestCase):
         """
         Test templates can handle objects with no sense of truthiness
         """
+
         class NonBoolObject(object):
             def __len__(self):
                 return NotImplemented
+
             def __bool__(self):
                 return NotImplemented
 
@@ -671,7 +671,7 @@ class CoreTest(unittest.TestCase):
                                 **self.default_scheduler_args)
         job.run()
         log_base_directory = configuration.conf.get("scheduler",
-            "child_process_log_directory")
+                                                    "child_process_log_directory")
         latest_log_directory_path = os.path.join(log_base_directory, "latest")
         # verify that the symlink to the latest logs exists
         assert os.path.islink(latest_log_directory_path)
@@ -917,11 +917,11 @@ class CoreTest(unittest.TestCase):
         assert State.RUNNING == ti.state
         ti = (
             session.query(TI)
-            .filter_by(
+                .filter_by(
                 dag_id=task.dag_id,
                 task_id=task.task_id,
                 execution_date=DEFAULT_DATE)
-            .one()
+                .one()
         )
         # deleting the instance should result in a failure
         session.delete(ti)
@@ -1001,7 +1001,7 @@ class CoreTest(unittest.TestCase):
 
         run2 = self.dag_bash.create_dagrun(
             run_id="run2",
-            execution_date=DEFAULT_DATE+timedelta(days=1),
+            execution_date=DEFAULT_DATE + timedelta(days=1),
             state=State.RUNNING)
 
         models.DagStat.update([self.dag_bash.dag_id], session=session)
@@ -1024,17 +1024,17 @@ class CoreTest(unittest.TestCase):
 
         qry = session.query(models.DagStat).filter(models.DagStat.state == State.SUCCESS).all()
         assert len(qry) == 1
-        assert qry[0].dag_id == self.dag_bash.dag_id and\
-                qry[0].state == State.SUCCESS and\
-                qry[0].count == 1 and\
-                qry[0].dirty == False
+        assert qry[0].dag_id == self.dag_bash.dag_id and \
+               qry[0].state == State.SUCCESS and \
+               qry[0].count == 1 and \
+               qry[0].dirty == False
 
         qry = session.query(models.DagStat).filter(models.DagStat.state == State.RUNNING).all()
         assert len(qry) == 1
-        assert qry[0].dag_id == self.dag_bash.dag_id and\
-                qry[0].state == State.RUNNING and\
-                qry[0].count == 1 and\
-                qry[0].dirty == False
+        assert qry[0].dag_id == self.dag_bash.dag_id and \
+               qry[0].state == State.RUNNING and \
+               qry[0].count == 1 and \
+               qry[0].dirty == False
 
         session.query(models.DagRun).delete()
         session.query(models.DagStat).delete()
@@ -1074,8 +1074,8 @@ class CliTests(unittest.TestCase):
             cli.connections(self.parser.parse_args(['connections', '--list']))
             stdout = mock_stdout.getvalue()
         conns = [[x.strip("'") for x in re.findall("'\w+'", line)[:2]]
-                  for ii, line in enumerate(stdout.split('\n'))
-                  if ii % 2 == 1]
+                 for ii, line in enumerate(stdout.split('\n'))
+                 if ii % 2 == 1]
         conns = [conn for conn in conns if len(conn) > 0]
 
         # Assert that some of the connections are present in the output as
@@ -1187,9 +1187,9 @@ class CliTests(unittest.TestCase):
         # Add connections
         for conn_id in ['new1', 'new2', 'new3', 'new4']:
             result = (session
-                      .query(models.Connection)
-                      .filter(models.Connection.conn_id == conn_id)
-                      .first())
+                .query(models.Connection)
+                .filter(models.Connection.conn_id == conn_id)
+                .first())
             result = (result.conn_id, result.conn_type, result.host,
                       result.port, result.get_extra())
             self.assertEqual(result, (conn_id, 'postgres', 'host', 5432,
@@ -1220,9 +1220,9 @@ class CliTests(unittest.TestCase):
         # Check deletions
         for conn_id in ['new1', 'new2', 'new3', 'new4']:
             result = (session
-                      .query(models.Connection)
-                      .filter(models.Connection.conn_id == conn_id)
-                      .first())
+                .query(models.Connection)
+                .filter(models.Connection.conn_id == conn_id)
+                .first())
 
             self.assertTrue(result is None)
 
@@ -1476,6 +1476,7 @@ class CliTests(unittest.TestCase):
         # Assert that no process remains.
         self.assertEqual(1, subprocess.Popen(["pgrep", "-c", "airflow"]).wait())
         self.assertEqual(1, subprocess.Popen(["pgrep", "-c", "gunicorn"]).wait())
+
 
 class WebUiTests(unittest.TestCase):
     def setUp(self):
@@ -1883,6 +1884,7 @@ class FakeSession(object):
     def prepare_request(self, request):
         return self.response
 
+
 class HttpOpSensorTest(unittest.TestCase):
     def setUp(self):
         configuration.load_test_config()
@@ -1982,19 +1984,24 @@ class FakeSnakeBiteClient(object):
             raise FakeSnakeBiteClientException
         elif path[0] == '/datadirectory/regex_dir':
             return [{'group': u'supergroup', 'permission': 420, 'file_type': 'f', 'access_time': 1481122343796,
-                     'block_replication': 3, 'modification_time': 1481122343862, 'length': 12582912, 'blocksize': 134217728,
+                     'block_replication': 3, 'modification_time': 1481122343862, 'length': 12582912,
+                     'blocksize': 134217728,
                      'owner': u'hdfs', 'path': '/datadirectory/regex_dir/test1file'},
                     {'group': u'supergroup', 'permission': 420, 'file_type': 'f', 'access_time': 1481122343796,
-                     'block_replication': 3, 'modification_time': 1481122343862, 'length': 12582912, 'blocksize': 134217728,
+                     'block_replication': 3, 'modification_time': 1481122343862, 'length': 12582912,
+                     'blocksize': 134217728,
                      'owner': u'hdfs', 'path': '/datadirectory/regex_dir/test2file'},
                     {'group': u'supergroup', 'permission': 420, 'file_type': 'f', 'access_time': 1481122343796,
-                     'block_replication': 3, 'modification_time': 1481122343862, 'length': 12582912, 'blocksize': 134217728,
+                     'block_replication': 3, 'modification_time': 1481122343862, 'length': 12582912,
+                     'blocksize': 134217728,
                      'owner': u'hdfs', 'path': '/datadirectory/regex_dir/test3file'},
                     {'group': u'supergroup', 'permission': 420, 'file_type': 'f', 'access_time': 1481122343796,
-                     'block_replication': 3, 'modification_time': 1481122343862, 'length': 12582912, 'blocksize': 134217728,
+                     'block_replication': 3, 'modification_time': 1481122343862, 'length': 12582912,
+                     'blocksize': 134217728,
                      'owner': u'hdfs', 'path': '/datadirectory/regex_dir/copying_file_1.txt._COPYING_'},
                     {'group': u'supergroup', 'permission': 420, 'file_type': 'f', 'access_time': 1481122343796,
-                     'block_replication': 3, 'modification_time': 1481122343862, 'length': 12582912, 'blocksize': 134217728,
+                     'block_replication': 3, 'modification_time': 1481122343862, 'length': 12582912,
+                     'blocksize': 134217728,
                      'owner': u'hdfs', 'path': '/datadirectory/regex_dir/copying_file_3.txt.sftp'}
                     ]
         else:
@@ -2185,7 +2192,8 @@ class EmailTest(unittest.TestCase):
     def test_custom_backend(self, mock_send_email):
         configuration.set('email', 'EMAIL_BACKEND', 'tests.core.send_email_test')
         utils.email.send_email('to', 'subject', 'content')
-        send_email_test.assert_called_with('to', 'subject', 'content', files=None, dryrun=False, cc=None, bcc=None, mime_subtype='mixed')
+        send_email_test.assert_called_with('to', 'subject', 'content', files=None, dryrun=False, cc=None, bcc=None,
+                                           mime_subtype='mixed')
         assert not mock_send_email.called
 
 
@@ -2230,7 +2238,6 @@ class EmailSmtpTest(unittest.TestCase):
                u'attachment; filename="' + os.path.basename(attachment.name) + '"'
         mimeapp = MIMEApplication('attachment')
         assert msg.get_payload()[-1].get_payload() == mimeapp.get_payload()
-
 
     @mock.patch('smtplib.SMTP_SSL')
     @mock.patch('smtplib.SMTP')
@@ -2285,6 +2292,7 @@ class EmailSmtpTest(unittest.TestCase):
         utils.email.send_MIME_email('from', 'to', MIMEMultipart(), dryrun=True)
         assert not mock_smtp.called
         assert not mock_smtp_ssl.called
+
 
 if __name__ == '__main__':
     unittest.main()

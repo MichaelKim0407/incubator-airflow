@@ -46,6 +46,7 @@ class SqoopHook(BaseHook):
         unarchived on the compute machines.
     :type archives: str
     """
+
     def __init__(self, conn_id='sqoop_default'):
         conn = self.get_connection(conn_id)
         self.hive_home = conn.extra_dejson.get('hive_home', None)

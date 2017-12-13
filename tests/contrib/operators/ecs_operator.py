@@ -29,7 +29,6 @@ except ImportError:
     except ImportError:
         mock = None
 
-
 RESPONSE_WITHOUT_FAILURES = {
     "failures": [],
     "tasks": [
@@ -67,7 +66,6 @@ class TestECSOperator(unittest.TestCase):
             region_name='eu-west-1')
 
     def test_init(self):
-
         self.assertEqual(self.ecs.region_name, 'eu-west-1')
         self.assertEqual(self.ecs.task_definition, 't')
         self.assertEqual(self.ecs.aws_conn_id, None)
@@ -83,7 +81,6 @@ class TestECSOperator(unittest.TestCase):
     @mock.patch.object(ECSOperator, '_wait_for_task_ended')
     @mock.patch.object(ECSOperator, '_check_success_task')
     def test_execute_without_failures(self, check_mock, wait_mock):
-
         client_mock = self.aws_hook_mock.return_value.get_client_type.return_value
         client_mock.run_task.return_value = RESPONSE_WITHOUT_FAILURES
 
@@ -102,7 +99,6 @@ class TestECSOperator(unittest.TestCase):
         self.assertEqual(self.ecs.arn, 'arn:aws:ecs:us-east-1:012345678910:task/d8c67b3c-ac87-4ffe-a847-4785bc3a8b55')
 
     def test_execute_with_failures(self):
-
         client_mock = self.aws_hook_mock.return_value.get_client_type.return_value
         resp_failures = deepcopy(RESPONSE_WITHOUT_FAILURES)
         resp_failures['failures'].append('dummy error')
@@ -120,7 +116,6 @@ class TestECSOperator(unittest.TestCase):
         )
 
     def test_wait_end_tasks(self):
-
         client_mock = mock.Mock()
         self.ecs.arn = 'arn'
         self.ecs.client = client_mock
@@ -147,7 +142,8 @@ class TestECSOperator(unittest.TestCase):
         with self.assertRaises(Exception) as e:
             self.ecs._check_success_task()
 
-        self.assertEquals(str(e.exception), "This task is not in success state {'containers': [{'lastStatus': 'STOPPED', 'name': 'foo', 'exitCode': 1}]}")
+        self.assertEquals(str(e.exception),
+                          "This task is not in success state {'containers': [{'lastStatus': 'STOPPED', 'name': 'foo', 'exitCode': 1}]}")
         client_mock.describe_tasks.assert_called_once_with(cluster='c', tasks=['arn'])
 
     def test_check_success_tasks_raises_pending(self):
@@ -164,7 +160,8 @@ class TestECSOperator(unittest.TestCase):
         }
         with self.assertRaises(Exception) as e:
             self.ecs._check_success_task()
-        self.assertEquals(str(e.exception), "This task is still pending {'containers': [{'lastStatus': 'PENDING', 'name': 'container-name'}]}")
+        self.assertEquals(str(e.exception),
+                          "This task is still pending {'containers': [{'lastStatus': 'PENDING', 'name': 'container-name'}]}")
         client_mock.describe_tasks.assert_called_once_with(cluster='c', tasks=['arn'])
 
     def test_check_success_tasks_raises_mutliple(self):

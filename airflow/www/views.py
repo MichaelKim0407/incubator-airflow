@@ -228,32 +228,34 @@ def data_profiling_required(f):
     '''
     Decorator for views requiring data profiling access
     '''
+
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if (
-                    current_app.config['LOGIN_DISABLED'] or
-                    (not current_user.is_anonymous() and current_user.data_profiling())
+                current_app.config['LOGIN_DISABLED'] or
+                (not current_user.is_anonymous() and current_user.data_profiling())
         ):
             return f(*args, **kwargs)
         else:
             flash("This page requires data profiling privileges", "error")
             return redirect(url_for('admin.index'))
+
     return decorated_function
 
 
 def fused_slots(v, c, m, p):
     url = (
-        '/admin/taskinstance/' +
-        '?flt1_pool_equals=' + m.pool +
-        '&flt2_state_equals=running')
+            '/admin/taskinstance/' +
+            '?flt1_pool_equals=' + m.pool +
+            '&flt2_state_equals=running')
     return Markup("<a href='{0}'>{1}</a>".format(url, m.used_slots()))
 
 
 def fqueued_slots(v, c, m, p):
     url = (
-        '/admin/taskinstance/' +
-        '?flt1_pool_equals=' + m.pool +
-        '&flt2_state_equals=queued&sort=10&desc=1')
+            '/admin/taskinstance/' +
+            '?flt1_pool_equals=' + m.pool +
+            '&flt2_state_equals=queued&sort=10&desc=1')
     return Markup("<a href='{0}'>{1}</a>".format(url, m.queued_slots()))
 
 
@@ -279,7 +281,6 @@ def should_hide_value_for_key(key_name):
            and conf.getboolean('admin', 'hide_sensitive_variable_fields')
 
 
-
 def get_chart_height(dag):
     """
     TODO(aoen): See [AIRFLOW-1263] We use the number of tasks in the DAG as a heuristic to
@@ -288,6 +289,7 @@ def get_chart_height(dag):
     charts, that is charts that take up space based on the size of the components within.
     """
     return 600 + len(dag.tasks) * 10
+
 
 class Airflow(BaseView):
 
@@ -373,7 +375,7 @@ class Airflow(BaseView):
             payload['error'] += "SQL needs to return at least 3 columns. "
         elif (
                 not payload['error'] and
-                chart.sql_layout == 'columns'and
+                chart.sql_layout == 'columns' and
                 len(df.columns) < 2):
             payload['error'] += "SQL needs to return at least 2 columns. "
         elif not payload['error']:
@@ -516,31 +518,31 @@ class Airflow(BaseView):
 
         LastDagRun = (
             session.query(DagRun.dag_id, sqla.func.max(DagRun.execution_date).label('execution_date'))
-            .join(Dag, Dag.dag_id == DagRun.dag_id)
-            .filter(DagRun.state != State.RUNNING)
-            .filter(Dag.is_active == True)
-            .group_by(DagRun.dag_id)
-            .subquery('last_dag_run')
+                .join(Dag, Dag.dag_id == DagRun.dag_id)
+                .filter(DagRun.state != State.RUNNING)
+                .filter(Dag.is_active == True)
+                .group_by(DagRun.dag_id)
+                .subquery('last_dag_run')
         )
         RunningDagRun = (
             session.query(DagRun.dag_id, DagRun.execution_date)
-            .join(Dag, Dag.dag_id == DagRun.dag_id)
-            .filter(DagRun.state == State.RUNNING)
-            .filter(Dag.is_active == True)
-            .subquery('running_dag_run')
+                .join(Dag, Dag.dag_id == DagRun.dag_id)
+                .filter(DagRun.state == State.RUNNING)
+                .filter(Dag.is_active == True)
+                .subquery('running_dag_run')
         )
 
         # Select all task_instances from active dag_runs.
         # If no dag_run is active, return task instances from most recent dag_run.
         LastTI = (
             session.query(TI.dag_id.label('dag_id'), TI.state.label('state'))
-            .join(LastDagRun, and_(
+                .join(LastDagRun, and_(
                 LastDagRun.c.dag_id == TI.dag_id,
                 LastDagRun.c.execution_date == TI.execution_date))
         )
         RunningTI = (
             session.query(TI.dag_id.label('dag_id'), TI.state.label('state'))
-            .join(RunningDagRun, and_(
+                .join(RunningDagRun, and_(
                 RunningDagRun.c.dag_id == TI.dag_id,
                 RunningDagRun.c.execution_date == TI.execution_date))
         )
@@ -548,7 +550,7 @@ class Airflow(BaseView):
         UnionTI = union_all(LastTI, RunningTI).alias('union_ti')
         qry = (
             session.query(UnionTI.c.dag_id, UnionTI.c.state, sqla.func.count())
-            .group_by(UnionTI.c.dag_id, UnionTI.c.state)
+                .group_by(UnionTI.c.dag_id, UnionTI.c.state)
         )
 
         data = {}
@@ -606,9 +608,9 @@ class Airflow(BaseView):
         TI = models.TaskInstance
         states = (
             session.query(TI.state, sqla.func.count(TI.dag_id))
-            .filter(TI.dag_id == dag_id)
-            .group_by(TI.state)
-            .all()
+                .filter(TI.dag_id == dag_id)
+                .group_by(TI.state)
+                .all()
         )
         return self.render(
             'airflow/dag_details.html',
@@ -691,7 +693,7 @@ class Airflow(BaseView):
                 html_dict[template_field] = attr_renderer[template_field](content)
             else:
                 html_dict[template_field] = (
-                    "<pre><code>" + str(content) + "</pre></code>")
+                        "<pre><code>" + str(content) + "</pre></code>")
 
         return self.render(
             'airflow/ti_code.html',
@@ -700,7 +702,7 @@ class Airflow(BaseView):
             task_id=task_id,
             execution_date=execution_date,
             form=form,
-            title=title,)
+            title=title, )
 
     @expose('/log')
     @login_required
@@ -743,7 +745,7 @@ class Airflow(BaseView):
                     conf.get('celery', 'WORKER_LOG_SERVER_PORT')
                 url = os.path.join(
                     "http://{host}:{WORKER_LOG_SERVER_PORT}/log", log_relative
-                    ).format(**locals())
+                ).format(**locals())
                 log += "*** Log file isn't local.\n"
                 log += "*** Fetching here: {url}\n".format(**locals())
                 try:
@@ -831,7 +833,7 @@ class Airflow(BaseView):
             if not attr_name.startswith('_'):
                 attr = getattr(task, attr_name)
                 if type(attr) != type(self.task) and \
-                                attr_name not in attr_renderer:
+                        attr_name not in attr_renderer:
                     task_attrs.append((attr_name, str(attr)))
 
         # Color coding the special attributes that are code
@@ -849,9 +851,9 @@ class Airflow(BaseView):
             {}
             <br/>
             If this task instance does not start soon please contact your Airflow administrator for assistance."""
-                   .format(
-                       "- This task instance already ran and had it's state changed manually (e.g. cleared in the UI)<br/>"
-                       if ti.state == State.NONE else "")))]
+                .format(
+                "- This task instance already ran and had it's state changed manually (e.g. cleared in the UI)<br/>"
+                if ti.state == State.NONE else "")))]
 
         # Use the scheduler's context to figure out which dependencies are not met
         dep_context = DepContext(SCHEDULER_DEPS)
@@ -1054,7 +1056,7 @@ class Airflow(BaseView):
                     message=(
                         "Here's the list of task instances you are about "
                         "to clear:"),
-                    details=details,)
+                    details=details, )
 
             return response
 
@@ -1065,9 +1067,9 @@ class Airflow(BaseView):
         DR = models.DagRun
         dags = (
             session.query(DR.dag_id, sqla.func.count(DR.id))
-            .filter(DR.state == State.RUNNING)
-            .group_by(DR.dag_id)
-            .all()
+                .filter(DR.state == State.RUNNING)
+                .group_by(DR.dag_id)
+                .all()
         )
         payload = []
         for dag_id, active_dag_runs in dags:
@@ -1166,11 +1168,11 @@ class Airflow(BaseView):
         DR = models.DagRun
         dag_runs = (
             session.query(DR)
-            .filter(
-                DR.dag_id==dag.dag_id,
-                DR.execution_date<=base_date,
-                DR.execution_date>=min_date)
-            .all()
+                .filter(
+                DR.dag_id == dag.dag_id,
+                DR.execution_date <= base_date,
+                DR.execution_date >= min_date)
+                .all()
         )
         dag_runs = {
             dr.execution_date: alchemy_to_dict(dr) for dr in dag_runs}
@@ -1179,7 +1181,7 @@ class Airflow(BaseView):
         max_date = max(dates) if dates else None
 
         tis = dag.get_task_instances(
-                session, start_date=min_date, end_date=base_date)
+            session, start_date=min_date, end_date=base_date)
         task_instances = {}
         for ti in tis:
             tid = alchemy_to_dict(ti)
@@ -1221,10 +1223,10 @@ class Airflow(BaseView):
             return {
                 'name': task.task_id,
                 'instances': [
-                        set_duration(task_instances.get((task.task_id, d))) or {
-                            'execution_date': d.isoformat(),
-                            'task_id': task.task_id
-                        }
+                    set_duration(task_instances.get((task.task_id, d))) or {
+                        'execution_date': d.isoformat(),
+                        'task_id': task.task_id
+                    }
                     for d in dates],
                 children_key: children,
                 'num_dep': len(task.upstream_list),
@@ -1236,6 +1238,7 @@ class Airflow(BaseView):
                 'depends_on_past': task.depends_on_past,
                 'ui_color': task.ui_color,
             }
+
         data = {
             'name': '[DAG]',
             'children': [recurse_nodes(t, set()) for t in dag.roots],
@@ -1316,8 +1319,8 @@ class Airflow(BaseView):
         DR = models.DagRun
         drs = (
             session.query(DR)
-            .filter_by(dag_id=dag_id)
-            .order_by(desc(DR.execution_date)).all()
+                .filter_by(dag_id=dag_id)
+                .order_by(desc(DR.execution_date)).all()
         )
         dr_choices = []
         dr_state = None
@@ -1334,6 +1337,7 @@ class Airflow(BaseView):
                 ('TB', "Top->Bottom"),
                 ('BT', "Bottom->Top"),
             ))
+
         form = GraphForm(
             data={'execution_date': dttm.isoformat(), 'arrange': arrange})
 
@@ -1371,7 +1375,7 @@ class Airflow(BaseView):
             task_instances=json.dumps(task_instances, indent=2),
             tasks=json.dumps(tasks, indent=2),
             nodes=json.dumps(nodes, indent=2),
-            edges=json.dumps(edges, indent=2),)
+            edges=json.dumps(edges, indent=2), )
 
     @expose('/duration')
     @login_required
@@ -1398,7 +1402,6 @@ class Airflow(BaseView):
                 task_regex=root,
                 include_upstream=True,
                 include_downstream=False)
-
 
         chart_height = get_chart_height(dag)
         chart = nvd3.lineChart(
@@ -1440,7 +1443,7 @@ class Airflow(BaseView):
                                 y=scale_time_units(y[task.task_id], y_unit))
                 cum_chart.add_serie(name=task.task_id, x=x[task.task_id],
                                     y=scale_time_units(cum_y[task.task_id],
-                                    cum_y_unit))
+                                                       cum_y_unit))
 
         tis = dag.get_task_instances(
             session, start_date=min_date, end_date=base_date)
@@ -1590,7 +1593,7 @@ class Airflow(BaseView):
                                 y=scale_time_units(y[task.task_id], y_unit))
 
         tis = dag.get_task_instances(
-                session, start_date=min_date, end_date=base_date)
+            session, start_date=min_date, end_date=base_date)
         dates = sorted(list({ti.execution_date for ti in tis}))
         max_date = max([ti.execution_date for ti in tis]) if dates else None
 
@@ -1700,7 +1703,7 @@ class Airflow(BaseView):
                 'status': ti.state,
                 'executionDate': ti.execution_date.isoformat(),
             })
-        states = {ti.state:ti.state for ti in tis}
+        states = {ti.state: ti.state for ti in tis}
         data = {
             'taskNames': [ti.task_id for ti in tis],
             'tasks': tasks,
@@ -1777,6 +1780,7 @@ class Airflow(BaseView):
                 models.Variable.set(k, v, serialize_json=isinstance(v, dict))
             flash("{} variable(s) successfully updated.".format(len(d)))
         return redirect('/admin/variable')
+
 
 class HomeView(AdminIndexView):
     @expose("/")
@@ -1894,6 +1898,7 @@ class QueryView(wwwutils.DataProfilingMixin, BaseView):
         class QueryForm(Form):
             conn_id = SelectField("Layout", choices=db_choices)
             sql = TextAreaField("SQL", widget=wwwutils.AceEditorWidget())
+
         data = {
             'conn_id': conn_id_str,
             'sql': sql,
@@ -2080,7 +2085,7 @@ class ChartModelView(wwwutils.DataProfilingMixin, AirflowModelView):
                 Session().query(models.Connection.conn_id)
                     .group_by(models.Connection.conn_id)
             )
-            ]
+        ]
     }
 
     def on_model_change(self, form, model, is_created=True):
@@ -2091,6 +2096,7 @@ class ChartModelView(wwwutils.DataProfilingMixin, AirflowModelView):
         if not model.user_id and current_user and hasattr(current_user, 'id'):
             model.user_id = current_user.id
         model.last_modified = datetime.now()
+
 
 chart_mapping = (
     ('line', 'lineChart'),
@@ -2279,10 +2285,10 @@ class DagRunModelView(ModelViewOnly):
     def action_new_delete(self, ids):
         session = settings.Session()
         deleted = set(session.query(models.DagRun)
-            .filter(models.DagRun.id.in_(ids))
-            .all())
-        session.query(models.DagRun)\
-            .filter(models.DagRun.id.in_(ids))\
+                      .filter(models.DagRun.id.in_(ids))
+                      .all())
+        session.query(models.DagRun) \
+            .filter(models.DagRun.id.in_(ids)) \
             .delete(synchronize_session='fetch')
         session.commit()
         dirty_ids = []
@@ -2501,7 +2507,7 @@ class ConnectionModelView(wwwutils.SuperUserMixin, AirflowModelView):
         formdata = form.data
         if formdata['conn_type'] in ['jdbc', 'google_cloud_platform']:
             extra = {
-                key:formdata[key]
+                key: formdata[key]
                 for key in self.form_extra_fields.keys() if key in formdata}
             model.extra = json.dumps(extra)
 

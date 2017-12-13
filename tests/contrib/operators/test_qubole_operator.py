@@ -30,9 +30,9 @@ except ImportError:
     except ImportError:
         mock = None
 
-DAG_ID="qubole_test_dag"
-TASK_ID="test_task"
-DEFAULT_CONN="qubole_default"
+DAG_ID = "qubole_test_dag"
+TASK_ID = "test_task"
+DEFAULT_CONN = "qubole_default"
 TEMPLATE_CONN = "my_conn_id"
 DEFAULT_DATE = datetime(2017, 1, 1)
 
@@ -55,7 +55,7 @@ class QuboleOperatorTest(unittest.TestCase):
                                   qubole_conn_id="{{ dag_run.conf['qubole_conn_id'] }}")
 
         result = task.render_template('qubole_conn_id', "{{ qubole_conn_id }}",
-                                      {'qubole_conn_id' : TEMPLATE_CONN})
+                                      {'qubole_conn_id': TEMPLATE_CONN})
         self.assertEqual(task.task_id, TASK_ID)
         self.assertEqual(result, TEMPLATE_CONN)
 
@@ -74,7 +74,7 @@ class QuboleOperatorTest(unittest.TestCase):
         with dag:
             task = QuboleOperator(task_id=TASK_ID, command_type='sparkcmd',
                                   note_id="123", dag=dag)
-        self.assertEqual(task.get_hook().create_cmd_args({'run_id':'dummy'})[0],
+        self.assertEqual(task.get_hook().create_cmd_args({'run_id': 'dummy'})[0],
                          "--note-id=123")
 
     def test_position_args_parameters(self):
@@ -82,13 +82,9 @@ class QuboleOperatorTest(unittest.TestCase):
 
         with dag:
             task = QuboleOperator(task_id=TASK_ID, command_type='pigcmd',
-                          parameters="key1=value1 key2=value2", dag=dag)
+                                  parameters="key1=value1 key2=value2", dag=dag)
 
-        self.assertEqual(task.get_hook().create_cmd_args({'run_id':'dummy'})[1],
+        self.assertEqual(task.get_hook().create_cmd_args({'run_id': 'dummy'})[1],
                          "key1=value1")
-        self.assertEqual(task.get_hook().create_cmd_args({'run_id':'dummy'})[2],
+        self.assertEqual(task.get_hook().create_cmd_args({'run_id': 'dummy'})[2],
                          "key2=value2")
-
-
-
-

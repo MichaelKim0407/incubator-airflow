@@ -30,8 +30,8 @@ def get_after(sentinel, iterable):
     next(truncated)
     return next(truncated)
 
-class TestSparkSqlHook(unittest.TestCase):
 
+class TestSparkSqlHook(unittest.TestCase):
     _config = {
         'conn_id': 'spark_default',
         'executor_cores': 4,

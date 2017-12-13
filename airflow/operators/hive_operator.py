@@ -81,11 +81,11 @@ class HiveOperator(BaseOperator):
 
     def get_hook(self):
         return HiveCliHook(
-                        hive_cli_conn_id=self.hive_cli_conn_id,
-                        run_as=self.run_as,
-                        mapred_queue=self.mapred_queue,
-                        mapred_queue_priority=self.mapred_queue_priority,
-                        mapred_job_name=self.mapred_job_name)
+            hive_cli_conn_id=self.hive_cli_conn_id,
+            run_as=self.run_as,
+            mapred_queue=self.mapred_queue,
+            mapred_queue_priority=self.mapred_queue_priority,
+            mapred_job_name=self.mapred_job_name)
 
     def prepare_template(self):
         if self.hiveconf_jinja_translate:

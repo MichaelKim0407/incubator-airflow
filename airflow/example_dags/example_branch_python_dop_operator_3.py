@@ -28,12 +28,12 @@ args = {
 # BranchPython operator that depends on past
 # and where tasks may run or be skipped on
 # alternating runs
-dag = DAG(dag_id='example_branch_dop_operator_v3',schedule_interval='*/1 * * * *',  default_args=args)
+dag = DAG(dag_id='example_branch_dop_operator_v3', schedule_interval='*/1 * * * *', default_args=args)
 
 
 def should_run(ds, **kwargs):
-
-    print("------------- exec dttm = {} and minute = {}".format(kwargs['execution_date'], kwargs['execution_date'].minute))
+    print(
+    "------------- exec dttm = {} and minute = {}".format(kwargs['execution_date'], kwargs['execution_date'].minute))
     if kwargs['execution_date'].minute % 2 == 0:
         return "oper_1"
     else:

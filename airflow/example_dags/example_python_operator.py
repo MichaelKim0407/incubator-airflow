@@ -40,6 +40,7 @@ def print_context(ds, **kwargs):
     print(ds)
     return 'Whatever you return gets printed in the logs'
 
+
 run_this = PythonOperator(
     task_id='print_the_context',
     provide_context=True,

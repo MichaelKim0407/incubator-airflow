@@ -39,7 +39,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 def conditionally_trigger(context, dag_run_obj):
     """This function decides whether or not to Trigger the remote DAG"""
-    c_p =context['params']['condition_param']
+    c_p = context['params']['condition_param']
     print("Controller DAG : conditionally_trigger = {}".format(c_p))
     if context['params']['condition_param']:
         dag_run_obj.payload = {'message': context['params']['message']}
@@ -52,7 +52,6 @@ dag = DAG(dag_id='example_trigger_controller_dag',
           default_args={"owner": "airflow",
                         "start_date": datetime.now()},
           schedule_interval='@once')
-
 
 # Define the single task in this controller example DAG
 trigger = TriggerDagRunOperator(task_id='test_trigger_dagrun',

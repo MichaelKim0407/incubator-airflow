@@ -21,7 +21,6 @@ from airflow.operators.sensors import HttpSensor
 from datetime import timedelta
 import json
 
-
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,

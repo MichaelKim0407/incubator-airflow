@@ -25,7 +25,7 @@ from airflow import configuration
 
 LOG = logging.getLogger(__name__)
 
-NEED_KRB181_WORKAROUND=None
+NEED_KRB181_WORKAROUND = None
 
 
 def renew_from_kt():
@@ -36,8 +36,8 @@ def renew_from_kt():
     cmdv = [configuration.get('kerberos', 'kinit_path'),
             "-r", renewal_lifetime,
             "-k",  # host ticket
-            "-t", configuration.get('kerberos', 'keytab'),   # specify keytab
-            "-c", configuration.get('kerberos', 'ccache'),   # specify credentials cache
+            "-t", configuration.get('kerberos', 'keytab'),  # specify keytab
+            "-c", configuration.get('kerberos', 'ccache'),  # specify credentials cache
             principal]
     LOG.info("Reinitting kerberos from keytab: " +
              " ".join(cmdv))
@@ -98,7 +98,7 @@ def detect_conf_var():
 
 
 def run():
-    if configuration.get('kerberos','keytab') is None:
+    if configuration.get('kerberos', 'keytab') is None:
         LOG.debug("Keytab renewer not starting, no keytab configured")
         sys.exit(0)
 

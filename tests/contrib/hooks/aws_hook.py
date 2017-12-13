@@ -19,7 +19,6 @@ import boto3
 from airflow import configuration
 from airflow.contrib.hooks.aws_hook import AwsHook
 
-
 try:
     from moto import mock_emr
 except ImportError:
@@ -42,6 +41,7 @@ class TestAwsHook(unittest.TestCase):
         client_from_hook = hook.get_client_type('emr')
 
         self.assertEqual(client_from_hook.list_clusters()['Clusters'], [])
+
 
 if __name__ == '__main__':
     unittest.main()

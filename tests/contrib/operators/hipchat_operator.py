@@ -42,7 +42,7 @@ class HipChatOperatorTest(unittest.TestCase):
 
         operator = HipChatAPISendRoomNotificationOperator(
             task_id='test_hipchat_success',
-            owner = 'airflow',
+            owner='airflow',
             token='abc123',
             room_id='room_id',
             message='hello world!'

@@ -17,7 +17,6 @@ from airflow.operators.bash_operator import BashOperator
 from datetime import datetime
 from textwrap import dedent
 
-
 DEFAULT_DATE = datetime(2016, 1, 1)
 
 args = {

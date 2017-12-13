@@ -134,11 +134,11 @@ class DockerOperator(BaseOperator):
         tls_config = None
         if self.tls_ca_cert and self.tls_client_cert and self.tls_client_key:
             tls_config = tls.TLSConfig(
-                    ca_cert=self.tls_ca_cert,
-                    client_cert=(self.tls_client_cert, self.tls_client_key),
-                    verify=True,
-                    ssl_version=self.tls_ssl_version,
-                    assert_hostname=self.tls_hostname
+                ca_cert=self.tls_ca_cert,
+                client_cert=(self.tls_client_cert, self.tls_client_key),
+                verify=True,
+                ssl_version=self.tls_ssl_version,
+                assert_hostname=self.tls_hostname
             )
             self.docker_url = self.docker_url.replace('tcp://', 'https://')
 
@@ -162,14 +162,14 @@ class DockerOperator(BaseOperator):
             self.volumes.append('{0}:{1}'.format(host_tmp_dir, self.tmp_dir))
 
             self.container = self.cli.create_container(
-                    command=self.get_command(),
-                    cpu_shares=cpu_shares,
-                    environment=self.environment,
-                    host_config=self.cli.create_host_config(binds=self.volumes,
-                                                            network_mode=self.network_mode),
-                    image=image,
-                    mem_limit=self.mem_limit,
-                    user=self.user
+                command=self.get_command(),
+                cpu_shares=cpu_shares,
+                environment=self.environment,
+                host_config=self.cli.create_host_config(binds=self.volumes,
+                                                        network_mode=self.network_mode),
+                image=image,
+                mem_limit=self.mem_limit,
+                user=self.user
             )
             self.cli.start(self.container['Id'])
 

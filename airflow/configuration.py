@@ -26,6 +26,7 @@ import subprocess
 import warnings
 
 from future import standard_library
+
 standard_library.install_aliases()
 
 from builtins import str
@@ -39,7 +40,6 @@ warnings.filterwarnings(
     action='default', category=DeprecationWarning, module='airflow')
 warnings.filterwarnings(
     action='default', category=PendingDeprecationWarning, module='airflow')
-
 
 try:
     from cryptography.fernet import Fernet
@@ -82,7 +82,7 @@ def run_command(command):
     if process.returncode != 0:
         raise AirflowConfigException(
             "Cannot execute {}. Error code is: {}. Output: {}, Stderr: {}"
-            .format(command, process.returncode, output, stderr)
+                .format(command, process.returncode, output, stderr)
         )
 
     return output
@@ -508,7 +508,6 @@ dag_dir_list_interval = 0
 
 
 class AirflowConfigParser(ConfigParser):
-
     # These configuration elements can be fetched as the stdout of commands
     # following the "{section}__{name}__cmd" pattern, the idea behind this
     # is to not store password on boxes in text files.
@@ -548,18 +547,18 @@ class AirflowConfigParser(ConfigParser):
                     self.get('core', 'executor')))
 
         elif (
-            self.getboolean("webserver", "authenticate") and
-            self.get("webserver", "owner_mode") not in ['user', 'ldapgroup']
+                self.getboolean("webserver", "authenticate") and
+                self.get("webserver", "owner_mode") not in ['user', 'ldapgroup']
         ):
             raise AirflowConfigException(
                 "error: owner_mode option should be either "
                 "'user' or 'ldapgroup' when filtering by owner is set")
 
         elif (
-            self.getboolean("webserver", "authenticate") and
-            self.get("webserver", "owner_mode").lower() == 'ldapgroup' and
-            self.get("webserver", "auth_backend") != (
-                'airflow.contrib.auth.backends.ldap_auth')
+                self.getboolean("webserver", "authenticate") and
+                self.get("webserver", "owner_mode").lower() == 'ldapgroup' and
+                self.get("webserver", "auth_backend") != (
+                        'airflow.contrib.auth.backends.ldap_auth')
         ):
             raise AirflowConfigException(
                 "error: attempt at using ldapgroup "
@@ -762,6 +761,7 @@ def parameterized_config(template):
     all_vars = {k: v for d in [globals(), locals()] for k, v in d.items()}
     return template.format(**all_vars)
 
+
 TEST_CONFIG_FILE = AIRFLOW_HOME + '/unittests.cfg'
 if not os.path.isfile(TEST_CONFIG_FILE):
     logging.info("Creating new airflow config file for unit tests in: " +
@@ -779,7 +779,6 @@ if not os.path.isfile(AIRFLOW_CONFIG):
 
 logging.info("Reading the config from " + AIRFLOW_CONFIG)
 
-
 conf = AirflowConfigParser()
 conf.read(AIRFLOW_CONFIG)
 
@@ -791,6 +790,7 @@ def load_test_config():
     Note: this is not reversible.
     """
     conf.load_test_config()
+
 
 if conf.getboolean('core', 'unit_test_mode'):
     load_test_config()
@@ -823,6 +823,8 @@ def remove_option(section, option):
 def as_dict(display_source=False, display_sensitive=False):
     return conf.as_dict(
         display_source=display_source, display_sensitive=display_sensitive)
+
+
 as_dict.__doc__ = conf.as_dict.__doc__
 
 

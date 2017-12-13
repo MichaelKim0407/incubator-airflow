@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import unittest
+
 try:
     from unittest import mock
 except ImportError:
@@ -136,11 +137,11 @@ class S3ToHiveTransferTest(unittest.TestCase):
         # gz files contain mtime and filename in the header that
         # causes filecmp to return False even if contents are identical
         # Hence decompress to test for equality
-        if(ext == '.gz'):
-            with gzip.GzipFile(fn_1, 'rb') as f_1,\
-                 NamedTemporaryFile(mode='wb') as f_txt_1,\
-                 gzip.GzipFile(fn_2, 'rb') as f_2,\
-                 NamedTemporaryFile(mode='wb') as f_txt_2:
+        if (ext == '.gz'):
+            with gzip.GzipFile(fn_1, 'rb') as f_1, \
+                    NamedTemporaryFile(mode='wb') as f_txt_1, \
+                    gzip.GzipFile(fn_2, 'rb') as f_2, \
+                    NamedTemporaryFile(mode='wb') as f_txt_2:
                 shutil.copyfileobj(f_1, f_txt_1)
                 shutil.copyfileobj(f_2, f_txt_2)
                 f_txt_1.flush()
@@ -160,20 +161,20 @@ class S3ToHiveTransferTest(unittest.TestCase):
     def test__get_top_row_as_list(self):
         self.kwargs['delimiter'] = '\t'
         fn_txt = self._get_fn('.txt', True)
-        header_list = S3ToHiveTransfer(**self.kwargs).\
+        header_list = S3ToHiveTransfer(**self.kwargs). \
             _get_top_row_as_list(fn_txt)
         self.assertEqual(header_list, ['Sno', 'Some,Text'],
                          msg="Top row from file doesnt matched expected value")
 
         self.kwargs['delimiter'] = ','
-        header_list = S3ToHiveTransfer(**self.kwargs).\
+        header_list = S3ToHiveTransfer(**self.kwargs). \
             _get_top_row_as_list(fn_txt)
         self.assertEqual(header_list, ['Sno\tSome', 'Text'],
                          msg="Top row from file doesnt matched expected value")
 
     def test__match_headers(self):
         self.kwargs['field_dict'] = OrderedDict([('Sno', 'BIGINT'),
-                                                ('Some,Text', 'STRING')])
+                                                 ('Some,Text', 'STRING')])
         self.assertTrue(S3ToHiveTransfer(**self.kwargs).
                         _match_headers(['Sno', 'Some,Text']),
                         msg="Header row doesnt match expected value")
@@ -226,18 +227,18 @@ class S3ToHiveTransferTest(unittest.TestCase):
             mock_s3_object = mock.Mock(key=self.kwargs['s3_key'])
             mock_s3_object.get_contents_to_file.side_effect = \
                 lambda dest_file: \
-                self._cp_file_contents(ip_fn, dest_file.name)
+                    self._cp_file_contents(ip_fn, dest_file.name)
             mock_s3hook().get_key.return_value = mock_s3_object
             # file paramter to HiveCliHook.load_file is compared
             # against expected file oputput
             mock_hiveclihook().load_file.side_effect = \
                 lambda *args, **kwargs: \
-                self.assertTrue(
-                    self._check_file_equality(args[0],
-                                              op_fn,
-                                              ext
-                                              ),
-                    msg='{0} output file not as expected'.format(ext))
+                    self.assertTrue(
+                        self._check_file_equality(args[0],
+                                                  op_fn,
+                                                  ext
+                                                  ),
+                        msg='{0} output file not as expected'.format(ext))
             # Execute S3ToHiveTransfer
             s32hive = S3ToHiveTransfer(**self.kwargs)
             s32hive.execute(None)

@@ -100,6 +100,7 @@ def make_module(name, objects):
     module.__dict__.update((o.__name__, o) for o in objects)
     return module
 
+
 # Plugin components to integrate as modules
 operators_modules = []
 hooks_modules = []

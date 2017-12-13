@@ -27,6 +27,7 @@ from airflow.utils.decorators import apply_defaults
 from airflow.exceptions import (AirflowException,
                                 AirflowSensorTimeout,
                                 AirflowSkipException)
+
 configuration.load_test_config()
 
 DEFAULT_DATE = datetime(2015, 1, 1)
@@ -86,7 +87,7 @@ class SensorTimeoutTest(unittest.TestCase):
             poke_interval=5,
             params={'time_jump': timedelta(days=2, seconds=1)},
             dag=self.dag
-            )
+        )
         self.assertRaises(
             AirflowSensorTimeout,
             t.run,
@@ -99,6 +100,7 @@ class HttpSensorTests(unittest.TestCase):
         """
         Exception occurs in poke function should not be ignored.
         """
+
         def resp_check(resp):
             raise AirflowException('AirflowException raised here!')
 
