@@ -19,6 +19,7 @@ from __future__ import unicode_literals
 
 import copy
 import errno
+import json
 import logging
 import os
 import six
@@ -183,6 +184,9 @@ s3_folder =
 
 # Default logging level for airflow commands
 default_level = 20
+
+# Dict logging configuration file
+config = {AIRFLOW_HOME}/logging-config.json
 
 [cli]
 # In what way should the cli access the API. The LocalClient will use the
@@ -464,6 +468,7 @@ non_pooled_task_slot_count = 128
 [logging]
 base_folder = {AIRFLOW_HOME}/logs
 default_level = 20
+config = {AIRFLOW_HOME}/logging-config.json
 
 [cli]
 api_client = airflow.api.client.local_client
@@ -512,6 +517,44 @@ catchup_by_default = True
 scheduler_zombie_task_threshold = 300
 dag_dir_list_interval = 0
 """
+
+DEFAULT_LOGGING_CONFIG = {
+    "version": 1,
+    "formatters": {
+        "standard": {
+            "format": None
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "standard",
+        },
+        "airflow-models": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "formatter": "standard",
+            "filename": None,
+            "encoding": "UTF-8",
+            "when": "midnight",
+        },
+    },
+    "loggers": {
+        "": {
+            "level": "INFO",
+            "handlers": [
+                "console"
+            ],
+            "propagate": False,
+        },
+        "airflow.models": {
+            "level": "INFO",
+            "handlers": [
+                "airflow-models"
+            ],
+            "propagate": False,
+        },
+    }
+}
 
 
 class AirflowConfigParser(ConfigParser):
@@ -775,6 +818,12 @@ if not os.path.isfile(TEST_CONFIG_FILE):
                  TEST_CONFIG_FILE)
     with open(TEST_CONFIG_FILE, 'w') as f:
         f.write(parameterized_config(TEST_CONFIG))
+
+LOGGING_CONFIG_JSON = AIRFLOW_HOME + '/logging-config.json'
+if not os.path.isfile(LOGGING_CONFIG_JSON):
+    logging.info("Creating new airflow logging config file in: " + LOGGING_CONFIG_JSON)
+    with open(LOGGING_CONFIG_JSON, 'w') as f:
+        json.dump(DEFAULT_LOGGING_CONFIG, f, indent=4)
 
 if not os.path.isfile(AIRFLOW_CONFIG):
     # These configuration options are used to generate a default configuration
