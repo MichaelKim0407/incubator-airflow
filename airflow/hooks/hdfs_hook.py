@@ -19,6 +19,9 @@ try:
     snakebite_imported = True
     from snakebite.client import Client, HAClient, Namenode, AutoConfigClient
 except ImportError:
+    import six
+    if six.PY2:
+        raise
     snakebite_imported = False
 
 from airflow.exceptions import AirflowException
