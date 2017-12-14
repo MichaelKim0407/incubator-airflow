@@ -878,6 +878,13 @@ def scheduler(args):
         stdout.close()
         stderr.close()
     else:
+        log_format = settings.LOG_FORMAT
+        try:
+            log_config = conf.get('scheduler', 'logging_config')
+            settings.configure_logging_dict(log_config, 'scheduler', log_format)
+        except:
+            settings.configure_logging(log_format)
+
         signal.signal(signal.SIGINT, sigint_handler)
         signal.signal(signal.SIGTERM, sigint_handler)
         signal.signal(signal.SIGQUIT, sigquit_handler)

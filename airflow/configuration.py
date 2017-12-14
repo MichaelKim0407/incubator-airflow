@@ -185,9 +185,6 @@ s3_folder =
 # Default logging level for airflow commands
 default_level = 20
 
-# Dict logging configuration file
-config = {AIRFLOW_HOME}/logging-config.json
-
 [cli]
 # In what way should the cli access the API. The LocalClient will use the
 # database directly, while the json_client will use the api running on the
@@ -250,6 +247,9 @@ worker_class = sync
 # Log files for the gunicorn webserver. '-' means log to stderr.
 access_logfile = -
 error_logfile = -
+
+# Dict logging configuration file, uncomment to use
+# logging_config = {AIRFLOW_HOME}/webserver-logging-config.json
 
 # Expose the configuration file in the web server
 expose_config = False
@@ -392,6 +392,8 @@ max_threads = 2
 
 authenticate = False
 
+# Dict logging configuration file, uncomment to use
+# logging_config = {AIRFLOW_HOME}/scheduler-logging-config.json
 
 [mesos]
 # Mesos master address which MesosExecutor will connect to.
@@ -468,7 +470,6 @@ non_pooled_task_slot_count = 128
 [logging]
 base_folder = {AIRFLOW_HOME}/logs
 default_level = 20
-config = {AIRFLOW_HOME}/logging-config.json
 
 [cli]
 api_client = airflow.api.client.local_client
@@ -518,7 +519,7 @@ scheduler_zombie_task_threshold = 300
 dag_dir_list_interval = 0
 """
 
-DEFAULT_LOGGING_CONFIG = {
+WEBSERVER_LOGGING_CONFIG = {
     "version": 1,
     "formatters": {
         "standard": {
@@ -550,6 +551,58 @@ DEFAULT_LOGGING_CONFIG = {
             "level": "INFO",
             "handlers": [
                 "airflow-models"
+            ],
+            "propagate": False,
+        },
+    }
+}
+
+SCHEDULER_LOGGING_CONFIG = {
+    "version": 1,
+    "formatters": {
+        "standard": {
+            "format": None
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "standard",
+        },
+        "airflow-utils": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "formatter": "standard",
+            "filename": None,
+            "encoding": "UTF-8",
+            "when": "midnight",
+        },
+        "airflow-jobs": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "formatter": "standard",
+            "filename": None,
+            "encoding": "UTF-8",
+            "when": "midnight",
+        },
+    },
+    "loggers": {
+        "": {
+            "level": "INFO",
+            "handlers": [
+                "console"
+            ],
+            "propagate": False,
+        },
+        "airflow.utils": {
+            "level": "INFO",
+            "handlers": [
+                "airflow-utils"
+            ],
+            "propagate": False,
+        },
+        "airflow.jobs": {
+            "level": "INFO",
+            "handlers": [
+                "airflow-jobs"
             ],
             "propagate": False,
         },
@@ -819,11 +872,19 @@ if not os.path.isfile(TEST_CONFIG_FILE):
     with open(TEST_CONFIG_FILE, 'w') as f:
         f.write(parameterized_config(TEST_CONFIG))
 
-LOGGING_CONFIG_JSON = AIRFLOW_HOME + '/logging-config.json'
-if not os.path.isfile(LOGGING_CONFIG_JSON):
-    logging.info("Creating new airflow logging config file in: " + LOGGING_CONFIG_JSON)
-    with open(LOGGING_CONFIG_JSON, 'w') as f:
-        json.dump(DEFAULT_LOGGING_CONFIG, f, indent=4)
+WEBSERVER_LOGGING_CONFIG_JSON = AIRFLOW_HOME + '/webserver-logging-config.json'
+if not os.path.isfile(WEBSERVER_LOGGING_CONFIG_JSON):
+    logging.info("Creating new webserver logging config file in: "
+                 + WEBSERVER_LOGGING_CONFIG_JSON)
+    with open(WEBSERVER_LOGGING_CONFIG_JSON, 'w') as f:
+        json.dump(WEBSERVER_LOGGING_CONFIG, f, indent=4)
+
+SCHEDULER_LOGGING_CONFIG_JSON = AIRFLOW_HOME + '/scheduler-logging-config.json'
+if not os.path.isfile(SCHEDULER_LOGGING_CONFIG_JSON):
+    logging.info("Creating new scheduler logging config file in: "
+                 + SCHEDULER_LOGGING_CONFIG_JSON)
+    with open(SCHEDULER_LOGGING_CONFIG_JSON, 'w') as f:
+        json.dump(SCHEDULER_LOGGING_CONFIG, f, indent=4)
 
 if not os.path.isfile(AIRFLOW_CONFIG):
     # These configuration options are used to generate a default configuration
