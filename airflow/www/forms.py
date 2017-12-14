@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 from datetime import datetime
 from flask_admin.form import DateTimePickerWidget
 from wtforms import DateTimeField, SelectField
-from flask_wtf import Form
+from flask_wtf import FlaskForm as Form
 
 
 class DateTimeForm(Form):
