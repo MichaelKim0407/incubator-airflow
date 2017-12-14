@@ -17,7 +17,9 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import json
 import logging
+import logging.config
 import os
 import sys
 
@@ -69,18 +71,18 @@ ___  ___ |  / _  /   _  __/ _  / / /_/ /_ |/ |/ /
  """
 
 BASE_LOG_URL = '/admin/airflow/log'
-LOGGING_LEVEL = logging.INFO
+LOGGING_LEVEL = conf.getint('logging', 'default_level')
 
 # the prefix to append to gunicorn worker processes after init
 GUNICORN_WORKER_READY_PREFIX = "[ready] "
 
 # can't move this to conf due to ConfigParser interpolation
 LOG_FORMAT = (
-    '[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s')
+    '[%(asctime)s] {%(name)s %(filename)s:%(lineno)d} %(levelname)s - %(message)s')
 LOG_FORMAT_WITH_PID = (
-    '[%(asctime)s] [%(process)d] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s')
+    '[%(asctime)s] [%(process)d] {%(name)s %(filename)s:%(lineno)d} %(levelname)s - %(message)s')
 LOG_FORMAT_WITH_THREAD_NAME = (
-    '[%(asctime)s] {%(filename)s:%(lineno)d} %(threadName)s %(levelname)s - %(message)s')
+    '[%(asctime)s] {%(name)s %(filename)s:%(lineno)d} %(threadName)s %(levelname)s - %(message)s')
 SIMPLE_LOG_FORMAT = '%(asctime)s %(levelname)s - %(message)s'
 
 AIRFLOW_HOME = None
@@ -119,9 +121,23 @@ def policy(task_instance):
 
 
 def configure_logging(log_format=LOG_FORMAT):
-    logging.root.handlers = []
-    logging.basicConfig(
-        format=log_format, stream=sys.stdout, level=LOGGING_LEVEL)
+    log_config = conf.get('logging', 'config')
+    base_log_folder = conf.get('logging', 'base_folder')
+    with open(log_config) as f:
+        config = json.load(f)
+
+    config['formatters']['standard']['format'] = \
+        config['formatters']['standard']['format'] or \
+        log_format
+
+    handlers = config['handlers']
+    for key in handlers:
+        if 'File' in handlers[key]['class']:
+            handlers[key]['filename'] = \
+                handlers[key]['filename'] or \
+                os.path.join(base_log_folder, "{}.log".format(key))
+
+    logging.config.dictConfig(config)
 
 
 def configure_vars():

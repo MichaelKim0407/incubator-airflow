@@ -42,12 +42,12 @@ class LoggingMixin(object):
 class S3Log(object):
     """
     Utility class for reading and writing logs in S3.
-    Requires airflow[s3] and setting the REMOTE_BASE_LOG_FOLDER and
-    REMOTE_LOG_CONN_ID configuration options in airflow.cfg.
+    Requires airflow[s3] and setting the REMOTE_BASE_FOLDER and
+    REMOTE_CONN_ID configuration options in airflow.cfg.
     """
 
     def __init__(self):
-        remote_conn_id = configuration.get('core', 'REMOTE_LOG_CONN_ID')
+        remote_conn_id = configuration.get('logging', 'REMOTE_CONN_ID')
         try:
             from airflow.hooks.S3_hook import S3Hook
             self.hook = S3Hook(remote_conn_id)
@@ -106,7 +106,7 @@ class S3Log(object):
                     log,
                     key=remote_log_location,
                     replace=True,
-                    encrypt=configuration.getboolean('core', 'ENCRYPT_S3_LOGS'))
+                    encrypt=configuration.getboolean('logging', 'ENCRYPT_S3_LOGS'))
                 return
             except:
                 pass
@@ -118,15 +118,15 @@ class S3Log(object):
 class GCSLog(object):
     """
     Utility class for reading and writing logs in GCS. Requires
-    airflow[gcp_api] and setting the REMOTE_BASE_LOG_FOLDER and
-    REMOTE_LOG_CONN_ID configuration options in airflow.cfg.
+    airflow[gcp_api] and setting the REMOTE_BASE_FOLDER and
+    REMOTE_CONN_ID configuration options in airflow.cfg.
     """
 
     def __init__(self):
         """
         Attempt to create hook with airflow[gcp_api].
         """
-        remote_conn_id = configuration.get('core', 'REMOTE_LOG_CONN_ID')
+        remote_conn_id = configuration.get('logging', 'REMOTE_CONN_ID')
         self.hook = None
 
         try:

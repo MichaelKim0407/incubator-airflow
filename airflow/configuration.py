@@ -19,6 +19,7 @@ from __future__ import unicode_literals
 
 import copy
 import errno
+import json
 import logging
 import os
 import six
@@ -98,21 +99,6 @@ airflow_home = {AIRFLOW_HOME}
 # This path must be absolute
 dags_folder = {AIRFLOW_HOME}/dags
 
-# The folder where airflow should store its log files
-# This path must be absolute
-base_log_folder = {AIRFLOW_HOME}/logs
-
-# Airflow can store logs remotely in AWS S3 or Google Cloud Storage. Users
-# must supply a remote location URL (starting with either 's3://...' or
-# 'gs://...') and an Airflow connection id that provides access to the storage
-# location.
-remote_base_log_folder =
-remote_log_conn_id =
-# Use server-side encryption for logs stored in S3
-encrypt_s3_logs = False
-# DEPRECATED option for remote log storage, use remote_base_log_folder instead!
-s3_log_folder =
-
 # The executor class that airflow should use. Choices include
 # SequentialExecutor, LocalExecutor, CeleryExecutor
 executor = SequentialExecutor
@@ -179,6 +165,28 @@ security =
 # Turn unit test mode on (overwrites many configuration options with test
 # values at runtime)
 unit_test_mode = False
+
+[logging]
+# The folder where airflow should store its log files
+# This path must be absolute
+base_folder = {AIRFLOW_HOME}/logs
+
+# Airflow can store logs remotely in AWS S3 or Google Cloud Storage. Users
+# must supply a remote location URL (starting with either 's3://...' or
+# 'gs://...') and an Airflow connection id that provides access to the storage
+# location.
+remote_base_folder =
+remote_conn_id =
+# Use server-side encryption for logs stored in S3
+encrypt_s3_logs = False
+# DEPRECATED option for remote log storage, use remote_base_folder instead!
+s3_folder =
+
+# Default logging level for airflow commands
+default_level = 20
+
+# Dict logging configuration file
+config = {AIRFLOW_HOME}/logging-config.json
 
 [cli]
 # In what way should the cli access the API. The LocalClient will use the
@@ -448,7 +456,6 @@ unit_test_mode = True
 airflow_home = {AIRFLOW_HOME}
 dags_folder = {TEST_DAGS_FOLDER}
 plugins_folder = {TEST_PLUGINS_FOLDER}
-base_log_folder = {AIRFLOW_HOME}/logs
 executor = SequentialExecutor
 sql_alchemy_conn = sqlite:///{AIRFLOW_HOME}/unittests.db
 load_examples = True
@@ -457,6 +464,11 @@ dag_concurrency = 16
 dags_are_paused_at_creation = False
 fernet_key = {FERNET_KEY}
 non_pooled_task_slot_count = 128
+
+[logging]
+base_folder = {AIRFLOW_HOME}/logs
+default_level = 20
+config = {AIRFLOW_HOME}/logging-config.json
 
 [cli]
 api_client = airflow.api.client.local_client
@@ -505,6 +517,44 @@ catchup_by_default = True
 scheduler_zombie_task_threshold = 300
 dag_dir_list_interval = 0
 """
+
+DEFAULT_LOGGING_CONFIG = {
+    "version": 1,
+    "formatters": {
+        "standard": {
+            "format": None
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "standard",
+        },
+        "airflow-models": {
+            "class": "logging.handlers.TimedRotatingFileHandler",
+            "formatter": "standard",
+            "filename": None,
+            "encoding": "UTF-8",
+            "when": "midnight",
+        },
+    },
+    "loggers": {
+        "": {
+            "level": "INFO",
+            "handlers": [
+                "console"
+            ],
+            "propagate": False,
+        },
+        "airflow.models": {
+            "level": "INFO",
+            "handlers": [
+                "airflow-models"
+            ],
+            "propagate": False,
+        },
+    }
+}
 
 
 class AirflowConfigParser(ConfigParser):
@@ -768,6 +818,12 @@ if not os.path.isfile(TEST_CONFIG_FILE):
                  TEST_CONFIG_FILE)
     with open(TEST_CONFIG_FILE, 'w') as f:
         f.write(parameterized_config(TEST_CONFIG))
+
+LOGGING_CONFIG_JSON = AIRFLOW_HOME + '/logging-config.json'
+if not os.path.isfile(LOGGING_CONFIG_JSON):
+    logging.info("Creating new airflow logging config file in: " + LOGGING_CONFIG_JSON)
+    with open(LOGGING_CONFIG_JSON, 'w') as f:
+        json.dump(DEFAULT_LOGGING_CONFIG, f, indent=4)
 
 if not os.path.isfile(AIRFLOW_CONFIG):
     # These configuration options are used to generate a default configuration
