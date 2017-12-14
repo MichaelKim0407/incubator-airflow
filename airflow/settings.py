@@ -121,8 +121,23 @@ def policy(task_instance):
 
 
 def configure_logging(log_format=LOG_FORMAT):
-    log_config = conf.get('logging', 'config')
+    logging.root.handlers = []
+    logging.basicConfig(
+        format=log_format, stream=sys.stdout, level=LOGGING_LEVEL)
+
+
+def configure_logging_dict(log_config, folder, log_format):
     base_log_folder = conf.get('logging', 'base_folder')
+    base_log_folder = os.path.join(base_log_folder, folder)
+
+    def __create_folder(path):
+        if os.path.isdir(path):
+            return
+        __create_folder(os.path.dirname(path))
+        os.mkdir(path)
+
+    __create_folder(base_log_folder)
+
     with open(log_config) as f:
         config = json.load(f)
 

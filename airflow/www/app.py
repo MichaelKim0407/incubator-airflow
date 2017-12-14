@@ -57,7 +57,11 @@ def create_app(config=None, testing=False):
     app.register_blueprint(routes)
 
     log_format = airflow.settings.LOG_FORMAT_WITH_PID
-    airflow.settings.configure_logging(log_format=log_format)
+    try:
+        log_config = config.get('webserver', 'logging_config')
+        settings.configure_logging_dict(log_config, 'webserver', log_format)
+    except:
+        settings.configure_logging(log_format)
 
     with app.app_context():
         from airflow.www import views
