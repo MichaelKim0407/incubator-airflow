@@ -129,7 +129,8 @@ def get_dag(args):
 def backfill(args, dag=None):
     logging.basicConfig(
         level=settings.LOGGING_LEVEL,
-        format=settings.SIMPLE_LOG_FORMAT)
+        format=settings.SIMPLE_LOG_FORMAT,
+    )
 
     dag = dag or get_dag(args)
 
@@ -342,7 +343,8 @@ def run(args, dag=None):
         logging.basicConfig(
             stream=sys.stdout,
             level=settings.LOGGING_LEVEL,
-            format=settings.LOG_FORMAT)
+            format=settings.LOG_FORMAT,
+        )
     else:
         # Setting up logging to a file.
 
@@ -380,7 +382,8 @@ def run(args, dag=None):
         logging.basicConfig(
             filename=filename,
             level=settings.LOGGING_LEVEL,
-            format=settings.LOG_FORMAT)
+            format=settings.LOG_FORMAT,
+        )
 
     if not args.pickle and not dag:
         dag = get_dag(args)
@@ -600,7 +603,8 @@ def render(args):
 def clear(args):
     logging.basicConfig(
         level=settings.LOGGING_LEVEL,
-        format=settings.SIMPLE_LOG_FORMAT)
+        format=settings.SIMPLE_LOG_FORMAT,
+    )
     dag = get_dag(args)
 
     if args.task_regex:
@@ -956,8 +960,10 @@ def resetdb(args):
     if args.yes or input(
             "This will drop existing tables if they exist. "
             "Proceed? (y/n)").upper() == "Y":
-        logging.basicConfig(level=settings.LOGGING_LEVEL,
-                            format=settings.SIMPLE_LOG_FORMAT)
+        logging.basicConfig(
+            level=settings.LOGGING_LEVEL,
+            format=settings.SIMPLE_LOG_FORMAT,
+        )
         db_utils.resetdb()
     else:
         print("Bail.")
